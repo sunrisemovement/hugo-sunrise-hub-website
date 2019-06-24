@@ -229,7 +229,7 @@
   overflow: hidden;
   position: relative;
   display: grid;
-  grid-template-rows: 240px auto auto auto auto 1fr auto 0;
+  grid-template-rows: 240px auto auto auto auto 1fr 0;
   grid-row-gap: 16px;
   grid-template-columns: 0 auto auto 0;
   grid-column-gap: 16px;
@@ -268,10 +268,6 @@
 .events-location-name {
   font-size: 20px;
   line-height: 1;
-}
-
-.events-add {
-  grid-column: 2 / -2;
 }
 
 .events-info-details {

@@ -119,11 +119,6 @@
           <div class="events-detail-section events-info-details">
             {{ .Params.details | markdownify }}
           </div>
-          {{ with .OutputFormats.Get "Calendar" }}
-            <div class="events-add">
-              <a href="webcal:{{ .RelPermalink | absURL }}">Add To Calendar</a>
-            </div>
-          {{ end }}
         </div>
       </div>
     {{ end }}

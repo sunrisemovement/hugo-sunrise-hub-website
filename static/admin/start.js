@@ -65,6 +65,13 @@
         identifier_field: 'title',
         fields: [
           {
+            name: 'outputs',
+            label: 'Outputs',
+            widget: 'hidden',
+            required: true,
+            default: ['html', 'calendar'],
+          },
+          {
             name: 'title',
             label: 'Title',
             widget: 'string',
@@ -188,12 +195,12 @@
                 widget: 'string',
                 hint: 'An abbreviated hub name. If you are the hub for Anytown, PA, you might fill this in with "Anytown".',
                 required: true,
-              }
-            ]
-          }
-        ]
+              },
+            ],
+          },
+        ],
       },
-    ]
+    ],
   }
 
   window.startCMS = function (CMS, userConfig) {

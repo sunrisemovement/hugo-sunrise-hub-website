@@ -1,7 +1,7 @@
 ---
 title: July Hub Meeting
-start_date: 2019-07-02T01:00:00Z
-end_date: 2019-07-02T03:00:00Z
+start_date: 2019-07-02T01:30:00.000Z
+end_date: 2019-07-02T03:00:00.000Z
 location:
   address: '6099 Wilshire Blvd, Los Angeles, CA 90048'
   name: Johnie's Coffee Shop

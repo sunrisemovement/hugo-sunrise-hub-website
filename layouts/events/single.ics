@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+VERSION:2.0
+BEGIN:VEVENT
+DTSTAMP:{{ dateFormat "20060102T150405" .Params.start_date }}
+STATUS:CONFIRMED
+UID:{{ dateFormat "20060102T150405" .Params.start_date }}@hubsite.sunrisemovement.org
+DTSTART:{{ dateFormat "20060102T150405" .Params.start_date }}
+DTEND:{{ dateFormat "20060102T150405" .Params.end_date }}
+SUMMARY:{{ .Params.title }}
+DESCRIPTION:{{ .Params.details | markdownify | plainify }}
+LOCATION:{{ .Params.location.address }}
+END:VEVENT
+END:VCALENDAR

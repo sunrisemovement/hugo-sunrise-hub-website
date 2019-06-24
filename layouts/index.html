@@ -1,0 +1,108 @@
+{{ define "styles" }}
+  {{ $homeCss := relURL "css/home.css" }}
+  <link rel="stylesheet" href="{{ $homeCss }}" />
+{{ end }}
+
+{{ define "main" }}
+  <section
+    class="top"
+    id="top"
+    style="--image:url('{{ .Params.top.image | relURL }}');">
+    <div class="top-intro">
+      <h1 class="top-hub-name">Sunrise {{ $.Site.Data.settings.site.hubNameShort }}</h1>
+      <p class="top-details">{{ .Params.top.intro }}</p>
+    </div>
+  </section>
+  <section
+    id="about"
+    class="about shared-main-section"
+    >
+    <h2 class="shared-section-header">About</h2>
+    <div class="about-details">
+      <div class="about-details-content">
+        {{ .Params.about.details | markdownify }}
+      </div>
+    </div>
+  </section>
+  {{ $newsPages := where .Site.RegularPages "Section" "==" "news" }}
+  {{ $newsCount := len $newsPages }}
+  {{ $newsLatest := index $newsPages 0 }}
+  {{ $newsOldest := index $newsPages (sub $newsCount 1) }}
+  {{ if (gt $newsCount 0) }}
+    <section
+      id="news"
+      class="news shared-main-section">
+      <h2 class="shared-section-header">News</h2>
+      <div class="news-container">
+        <div class="news-latest shared-card">
+          <div class="news-latest-inner shared-card-inner">
+            <div class="news-latest-image" style="--image:url('{{ $newsLatest.Params.image | relURL }}')"></div>
+            <div class="news-latest-info">
+              <h3 class="news-latest-title">{{ $newsLatest.Params.title }}</h3>
+              <p class="news-latest-preview">
+                {{ $newsLatest.Params.content | truncate 200 }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="news-summary">
+          Sunrise
+          {{ $.Site.Data.settings.site.hubNameShort }}
+          has published
+          <strong>{{ $newsCount }}</strong>
+          {{ if (eq $newsCount 1) }}
+            story
+          {{ else }}
+            stories
+          {{ end }}
+          since
+          <strong>{{ $newsOldest.PublishDate.Format "January 2006" }}</strong>
+        </div>
+      </div>
+    </section>
+  {{ end }}
+  <section
+    id="events"
+    class="events shared-main-section">
+    <h2 class="shared-section-header">Events</h2>
+    {{ range where .Site.RegularPages "Section" "==" "events" }}
+      <div class="events-container shared-card">
+        {{ $baseGeocodeUrl := "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress?format=json&benchmark=Public_AR_Current&" }}
+        {{ $geocodeUrl := strings.TrimLeft " " (strings.TrimRight " " (string (delimit (slice $baseGeocodeUrl (querify "address" .Params.location.address)) ""))) }}
+        {{ $geocodeJson := getJSON $geocodeUrl }}
+        {{ $coordinate := (index $geocodeJson.result.addressMatches 0).coordinates }}
+        {{ $coordinateStr := delimit (slice (string $coordinate.x) (string $coordinate.y)) "," }}
+        {{ $baseMapParams := querify "access_token" "pk.eyJ1IjoibHVrZXdlc3RieSIsImEiOiJjanVrb3phNGsxeTdxNDNwZ2MybTQwNHl3In0.cD1c7AwcVaia7W4g-f5gLQ" }}
+        {{ $mapUrl := delimit (slice "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+000(" $coordinateStr ")/" $coordinateStr ",14,0,0/600x600?" $baseMapParams) "" }}
+        <div class="shared-card-inner">
+          <img class="events-map" src="{{ $mapUrl }}" />
+          <div class="events-info">
+            <h3>{{ .Params.title }}</h3>
+            <div class="events-info-grid">
+              <span class="material-icons">event</span>
+              <div>
+                <p>{{ dateFormat "January 1, 2006" .Params.start_date }}</p>
+                <p>
+                  {{ dateFormat "3:00pm" .Params.start_date }} - {{ dateFormat "3:00pm" .Params.end_date }}
+                </p>
+              </div>
+              <span class="material-icons">place</span>
+              <div>
+                <p>{{ .Params.location.name }}</p>
+                <p>{{ .Params.location.address }}</p>
+              </div>
+              {{ if .Params.is_accessible }}
+                <span class="material-icons">accessible</span>
+                <span>Wheelchair Accessible</span>
+              {{ end }}
+              <span class="material-icons">info</span>
+              <div>
+                {{ .Params.details | markdownify }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{ end }}
+  </section>
+{{ end }}

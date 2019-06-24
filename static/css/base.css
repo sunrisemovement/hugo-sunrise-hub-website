@@ -1,0 +1,30 @@
+/* Resets */
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Source Sans Pro;
+  color: var(--color-willow);
+  background-color: var(--color-charcoal);
+}
+
+* {
+  box-sizing: inherit;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+/* Variables */
+
+:root {
+  --color-charcoal: #33342E;
+  --color-yellow: #FFDE16;
+  --color-willow: #E3EDDF;
+  --shape-border-radius: 8px;
+  --elevation-overlay-opacity-01dp: 0.05;
+  --elevation-overlay-opacity-02dp: 0.07;
+  --elevation-box-shadow-01dp: 0 1px 3px 0 rgba(0,0,0,0.20), 0 2px 1px -1px rgba(0,0,0,0.12), 0 1px 1px 0 rgba(0,0,0,0.14);
+  --elevation-box-shadow-02dp: 0 1px 5px 0 rgba(0,0,0,0.20), 0 3px 1px -2px rgba(0,0,0,0.12), 0 2px 2px 0 rgba(0,0,0,0.14);
+}

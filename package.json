@@ -1,0 +1,22 @@
+{
+  "name": "hugo-sunrise-hub-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "run-p start:*",
+    "start:hugo": "cd exampleSite && hugo -p 1315 server",
+    "start:fs-backend": "node ./scripts/dev-server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "2.8.5",
+    "express": "4.17.1",
+    "hugo-bin": "0.43.6",
+    "netlify-cms-backend-fs": "0.4.4",
+    "npm-run-all": "4.1.5"
+  },
+  "fileSystemPath": "exampleSite"
+}

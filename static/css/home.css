@@ -294,3 +294,30 @@
   }
 
 /*#endregion */
+
+/*#region EVENTS INTERACTIVE */
+
+.nojs .events-interactive {
+  display: none;
+}
+
+.events-interactive {
+  max-width: 960px;
+  margin: 0 auto;
+  max-height: 100vh;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-auto-flow: row;
+  padding: 32px 0;
+}
+
+.events-interactive-container {
+  display: grid;
+  grid-template-columns: 6fr 4fr;
+  grid-column-gap: 16px;
+  grid-auto-flow: column;
+  min-height: 0;
+}
+
+/*#endregion */

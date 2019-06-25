@@ -1,0 +1,3 @@
+{{ $start := (time .Params.start_date).Local }}
+{{ $end := (time .Params.end_date).Local }}
+{{ return dict "details" (markdownify .Params.details) "title" .Params.title "start" $start "end" $end "location" (dict "address" .Params.location.address "name" .Params.location.name) "isAccessible" .Params.is_accessible }}

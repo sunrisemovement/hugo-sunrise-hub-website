@@ -1,16 +1,11 @@
 ;(function () {
-  const defaults = {
-    backend: {
-      name: 'gitlab',
-      repo: 'hub-websites/example-site',
-      auth_type: 'implicit',
-      app_id: '7e5cbbf9f25e2d3af36bce0a7c81a460968d7e1dee1685c3e1eac407faf202d0',
-      api_root: 'http://localhost:1337/api/v4',
-      base_url: 'http://localhost:1337',
-      auth_endpoint: 'oauth/authorize',
-    },
+  const mergePath = (base, rest) => {
+    return base ? base + '/' + rest : rest
+  }
+  const makeConfig = (config) => ({
+    backend: config.backend,
     load_config_file: false,
-    media_folder: 'static/images/uploads',
+    media_folder: mergePath(config.basePath, 'static/images/uploads'),
     public_folder: '/images/uploads',
 
     collections: [
@@ -18,7 +13,7 @@
         name: 'news',
         label: 'News',
         editor: { preview: false },
-        folder: 'content/news',
+        folder: mergePath(config.basePath, 'content/news'),
         create: true,
         identifier_field: 'title',
         slug: '{{fields.slug}}',
@@ -60,7 +55,7 @@
         label: "Events",
         editor: { preview: false },
         slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
-        folder: 'content/events',
+        folder: mergePath(config.basePath, 'content/events'),
         create: true,
         identifier_field: 'title',
         fields: [
@@ -128,7 +123,7 @@
         editor: { preview: false },
         files: [
           {
-            file: 'content/_index.md',
+            file: mergePath(config.basePath, 'content/_index.md'),
             label: 'Home',
             name: 'home',
             fields: [
@@ -178,7 +173,7 @@
         editor: { preview: false },
         files: [
           {
-            file: 'data/settings/site.json',
+            file: mergePath(config.basePath, 'data/settings/site.json'),
             label: 'Site Settings',
             name: 'site',
             fields: [
@@ -201,12 +196,11 @@
         ],
       },
     ],
-  }
+  })
 
   window.startCMS = function (CMS, userConfig) {
-    var config = Object.assign({}, defaults, userConfig)
     CMS.init({
-      config: config,
+      config: makeConfig(userConfig),
     })
   }
 }())

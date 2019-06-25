@@ -20,9 +20,9 @@
       const CMS = window.NetlifyCmsApp
       CMS.registerBackend('file-system', FileSystemBackendClass)
       try {
-        const resp = await fetch('./backend.json')
-        const backend = await resp.json()
-        window.startCMS(CMS, { backend })
+        const resp = await fetch('./config.json')
+        const userConfig = await resp.json()
+        window.startCMS(CMS, userConfig)
       } catch (_) {
         window.startCMS(CMS, {})
       }

@@ -6,7 +6,7 @@
 {{ define "scripts" }}
   {{ partial "window_data_events.html" . }}
   <script type="module">
-    import Calendar, { Event } from '/js/Calendar.js'
+    import Calendar, { Event } from '{{ "js/Calendar.js" | relURL }}'
     window.domready(() => {
       customElements.whenDefined('sunrise-calendar').then(() => {
         const calendar = document.querySelector('sunrise-calendar')

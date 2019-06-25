@@ -20,6 +20,6 @@
   },
   "fileSystemPath": "exampleSite",
   "devDependencies": {
-    "lit-element": "^2.2.0"
+    "lit-element": "2.2.0"
   }
 }

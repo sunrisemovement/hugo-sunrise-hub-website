@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="nojs">
+<head>
+	<meta name="generator" content="Hugo 0.55.4" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width" />
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,900|Material+Icons&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/hugo-sunrise-hub-website/css/base.css" />
+  
+  <link rel="stylesheet" href="/hugo-sunrise-hub-website/css/home.css" />
+
+  <script src="https://unpkg.com/domready@1.0.8/ready.js"></script>
+  <script src="/hugo-sunrise-hub-website/js/base.js" async></script>
+  
+<script>
+  window._data = window._data || {}
+  window._data.events = [{"details":"\u003cp\u003eUt ut fringilla lacus, vitae bibendum odio. Phasellus sed quam neque. Proin sed scelerisque lacus. Suspendisse posuere eros molestie, dictum ante non, porttitor lorem. Duis tempus malesuada erat vitae rutrum. Phasellus magna elit, faucibus sit amet feugiat a, tristique id est.\u003c/p\u003e\n\n\u003cp\u003eAliquam euismod purus quis dapibus ullamcorper. Maecenas convallis ex et diam consequat hendrerit. Curabitur euismod hendrerit velit non eleifend. Nullam pulvinar quis mi gravida convallis. Donec sed erat et nibh vulputate laoreet. Integer et libero enim. Sed id felis pharetra nibh imperdiet dignissim eget a diam. Aliquam nec consequat risus. Fusce tempor tristique dui, ut consectetur risus elementum at.\u003c/p\u003e\n","end":"2019-07-05T19:00:00Z","isAccessible":false,"location":{"address":"18705 Devonshire St, Northridge, CA 91324","name":"The Coffee Bean \u0026 Tea Leaf"},"start":"2019-07-05T15:00:00Z","title":"Canvass for Loraine"},{"details":"\u003cp\u003eSunrise Movement is a youth led organization aiming to stop climate change and create millions of good jobs in the process.\u003c/p\u003e\n\n\u003cp\u003eEvery couple of weeks we experience yet another climate disaster. All the while, our politicians refuse to step up and join us in this fight head on.\u003c/p\u003e\n\n\u003cp\u003eCome join us at our sixth hub meeting where we will prepare to #ChangeTheDebate.\u003c/p\u003e\n","end":"2019-07-02T03:00:00Z","isAccessible":true,"location":{"address":"6099 Wilshire Blvd, Los Angeles, CA 90048","name":"Johnie's Coffee Shop"},"start":"2019-07-02T01:30:00Z","title":"July Hub Meeting"},{"details":"\u003cp\u003eIt’s presidential debate season! The first primary debate will be held June 26-27 in Miami, Florida, and our hub will be hosting debate watch parties around the greater Los Angeles area as part of Sunrise’s summer mission to #ChangeTheDebate. Over 100 debate watch parties are being organized by Sunrise hubs around the country!\u003c/p\u003e\n\n\u003cp\u003e\u003cstrong\u003eOur watch party be on the first night of the debates - June 26th starting at 5:30pm. There will be 5 separate watch parties happening around Los Angeles. The South LA watch party will be in a yoga studio at 1746 West Adams Blvd, Los Angeles, CA 90018.\u003c/strong\u003e\u003c/p\u003e\n\n\u003cp\u003eSince the debate is starting around dinner time, we are making these events potluck style. We want to be well fed so we can pay good attention to the debate and participate in the fun! You can bet there’ll food, games and a lotta tweeting!\u003c/p\u003e\n\n\u003cp\u003ePotluck food contributions may be both large or small. Anything you can bring is greatly appreciated! Snack foods and drinks are welcome as well. And if you can\u0026rsquo;t bring anything at all, that\u0026rsquo;s totally ok too. The most important thing is that you\u0026rsquo;re there.\u003c/p\u003e\n\n\u003cp\u003eHere\u0026rsquo;s a random list of food and drink ideas to help get the juices flowing: summer farro salad, eggplant parmesan, guacamole, pizza puffs, cucumber bites, mango salsa and chips, grilled Mexican corn (elote), mediterranean pasta salad, stuffed bell peppers, deviled eggs, cilantro and tomato bruschetta, macaroni and cheese, nachos, coleslaw, potato salad, oatmeal raisin cookies, fruit salad, apple pie, \u0026ldquo;spindrift\u0026rdquo; soda, sparkling water, ginger beer, cranberry juice.\u003c/p\u003e\n\n\u003cp\u003eOver the course of the evening, we’ll be tuning in and amplifying the actions of Florida hubs on the ground. We’ll also be making plans for how we escalate and put the pressure on candidates who demonstrate during the debate that they’re doubling down on the same corporate-driven policies that will be a death sentence for our generation.\u003c/p\u003e\n\n\u003cp\u003eSo come on over, please invite your friends and bring some food to share!\u003c/p\u003e\n\n\u003cp\u003eP.S. Have you signed up to attend Sunrise’s biggest mobilization yet at the second debate in Detroit? Let us know if you\u0026rsquo;re interested in traveling to Detroit with us and RSVP here: \u003ca href=\"https://www.sunrisemovement.org/changethedebate\"\u003ehttps://www.sunrisemovement.org/changethedebate\u003c/a\u003e\u003c/p\u003e\n","end":"2019-06-27T04:00:00Z","isAccessible":true,"location":{"address":"1746 West Adams Blvd, Los Angeles, CA 90018","name":"RA MA East"},"start":"2019-06-27T00:30:00Z","title":"South LA Debate Watch Party to #ChangeTheDebate"}]
+</script>
+  <script type="module">
+    import Calendar, { Event } from '/hugo-sunrise-hub-website/js/Calendar.js'
+    window.domready(() => {
+      customElements.whenDefined('sunrise-calendar').then(() => {
+        const calendar = document.querySelector('sunrise-calendar')
+        const events = window._data.events.map(e => new Event(e))
+        calendar.events = events.concat(events).concat(events)
+      })
+      customElements.define('sunrise-calendar', Calendar)
+    })
+  </script>
+
+</head>
+<body>
+  <main>
+  <section
+    class="top"
+    id="top"
+    style="--image:url('/hugo-sunrise-hub-website/images/uploads/home-top-image.jpg');">
+    <div class="top-intro">
+      <h1 class="top-hub-name">Sunrise Anytown</h1>
+      <p class="top-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    </div>
+  </section>
+  <section
+    id="about"
+    class="about shared-main-section"
+    >
+    <h2 class="shared-section-header">About</h2>
+    <div class="about-details">
+      <div class="about-details-content">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras egestas urna vel quam convallis, pharetra luctus dolor volutpat. Phasellus at dapibus nunc. Phasellus suscipit lacus laoreet, pharetra tortor ut, tempor tellus. Praesent sodales lacus sapien, non dictum mi dictum eu. Quisque euismod erat in nibh aliquet, nec aliquet metus scelerisque. Donec hendrerit diam leo, vitae facilisis justo ultricies ac. Nunc sodales dictum nisi, quis viverra leo dictum non.</p>
+
+<p>Donec tincidunt quam mauris. Vivamus congue eros vitae efficitur vehicula. Phasellus dignissim tristique leo sed aliquet. Nunc posuere, orci id luctus ullamcorper, ante ipsum facilisis ex, nec consequat odio ex et risus. Cras sit amet metus volutpat sapien blandit aliquet. Donec laoreet eu metus quis finibus. Vestibulum pellentesque velit arcu, ut fringilla turpis varius ac. In tempor vestibulum sagittis. Cras varius fermentum ipsum a volutpat.</p>
+
+<p>In dictum nisi tortor, in interdum dui vehicula vel. Quisque porttitor tellus enim, et consequat massa efficitur sit amet. Nullam felis sapien, consequat sed venenatis sit amet, hendrerit id elit. Proin fringilla sed nulla eu sodales. Maecenas tristique tristique odio, id porta felis malesuada congue. Cras ac fermentum dolor. Morbi eleifend nisl vel elementum iaculis. Mauris a venenatis elit. Maecenas commodo, mi et interdum pharetra, arcu ipsum ullamcorper arcu, nec varius risus lacus eu sem. Vestibulum imperdiet magna nibh.</p>
+
+      </div>
+    </div>
+  </section>
+  
+  
+  
+  
+  
+    <section
+      id="news"
+      class="news shared-main-section">
+      <h2 class="shared-section-header">News</h2>
+      <div class="news-container">
+        <div class="news-latest shared-card">
+          <div class="news-latest-inner shared-card-inner">
+            <div class="news-latest-image" style="--image:url('/hugo-sunrise-hub-website/images/uploads/home-top-image.jpg')"></div>
+            <div class="news-latest-info">
+              <h3 class="news-latest-title">Lorem Ipsum Dolor Sit Amet</h3>
+              <p class="news-latest-preview">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque convallis nunc ut arcu ullamcorper, eu ornare elit volutpat. Pellentesque elementum ullamcorper fringilla. Praesent placerat et sem …
+              </p>
+              <div class="news-latest-actions">
+                &lt;
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="news-summary">
+          Sunrise
+          Anytown
+          has published
+          <strong>1</strong>
+          
+            story
+          
+          since
+          <strong>June 2019</strong>
+        </div>
+      </div>
+    </section>
+  
+  <section
+    id="events"
+    class="events-interactive">
+    <h2 class="shared-section-header">Events</h2>
+    <div class="events-interactive-container">
+      <sunrise-calendar></sunrise-calendar>
+    </div>
+  </section>
+
+  <noscript>
+    <section
+      id="events"
+      class="events shared-main-section">
+      <h2 class="shared-section-header events-header">
+        Events
+      </h2>
+      <div class="events-scroller">
+      
+        <div class="shared-card events-container">
+          
+          
+          
+          
+          
+          
+          
+          <div class="shared-card-inner events-container-inner">
+            <img class="events-map" src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s&#43;000%28-118.301735,34.03272%29/-118.301735,34.03272,14,0,0/600x600?access_token=pk.eyJ1IjoibHVrZXdlc3RieSIsImEiOiJjanVrb3phNGsxeTdxNDNwZ2MybTQwNHl3In0.cD1c7AwcVaia7W4g-f5gLQ" />
+            <h3 class="events-title">South LA Debate Watch Party to #ChangeTheDebate</h3>
+            <div class="events-icon">
+              <span class="material-icons">event</span>
+            </div>
+            <div class="events-detail-section">
+              
+              
+              <p class="events-start-date">
+                June 27, 2019
+              </p>
+              <p>
+                12:00am - 4:00am
+              </p>
+            </div>
+            <div class="events-icon">
+              <span class="material-icons">place</span>
+            </div>
+            <div class="events-detail-section">
+              <p class="events-location-name">
+                RA MA East
+              </p>
+              <p>1746 West Adams Blvd, Los Angeles, CA 90018</p>
+            </div>
+            
+              <div class="events-icon">
+                <span class="material-icons">accessible</span>
+              </div>
+              <div class="events-detail-section">
+                Wheelchair Accessible
+              </div>
+            
+            <div class="events-icon">
+              <span class="material-icons">info</span>
+            </div>
+            <div class="events-detail-section events-info-details">
+              <p>It’s presidential debate season! The first primary debate will be held June 26-27 in Miami, Florida, and our hub will be hosting debate watch parties around the greater Los Angeles area as part of Sunrise’s summer mission to #ChangeTheDebate. Over 100 debate watch parties are being organized by Sunrise hubs around the country!</p>
+
+<p><strong>Our watch party be on the first night of the debates - June 26th starting at 5:30pm. There will be 5 separate watch parties happening around Los Angeles. The South LA watch party will be in a yoga studio at 1746 West Adams Blvd, Los Angeles, CA 90018.</strong></p>
+
+<p>Since the debate is starting around dinner time, we are making these events potluck style. We want to be well fed so we can pay good attention to the debate and participate in the fun! You can bet there’ll food, games and a lotta tweeting!</p>
+
+<p>Potluck food contributions may be both large or small. Anything you can bring is greatly appreciated! Snack foods and drinks are welcome as well. And if you can&rsquo;t bring anything at all, that&rsquo;s totally ok too. The most important thing is that you&rsquo;re there.</p>
+
+<p>Here&rsquo;s a random list of food and drink ideas to help get the juices flowing: summer farro salad, eggplant parmesan, guacamole, pizza puffs, cucumber bites, mango salsa and chips, grilled Mexican corn (elote), mediterranean pasta salad, stuffed bell peppers, deviled eggs, cilantro and tomato bruschetta, macaroni and cheese, nachos, coleslaw, potato salad, oatmeal raisin cookies, fruit salad, apple pie, &ldquo;spindrift&rdquo; soda, sparkling water, ginger beer, cranberry juice.</p>
+
+<p>Over the course of the evening, we’ll be tuning in and amplifying the actions of Florida hubs on the ground. We’ll also be making plans for how we escalate and put the pressure on candidates who demonstrate during the debate that they’re doubling down on the same corporate-driven policies that will be a death sentence for our generation.</p>
+
+<p>So come on over, please invite your friends and bring some food to share!</p>
+
+<p>P.S. Have you signed up to attend Sunrise’s biggest mobilization yet at the second debate in Detroit? Let us know if you&rsquo;re interested in traveling to Detroit with us and RSVP here: <a href="https://www.sunrisemovement.org/changethedebate">https://www.sunrisemovement.org/changethedebate</a></p>
+
+            </div>
+          </div>
+        </div>
+      
+        <div class="shared-card events-container">
+          
+          
+          
+          
+          
+          
+          
+          <div class="shared-card-inner events-container-inner">
+            <img class="events-map" src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s&#43;000%28-118.3605,34.06282%29/-118.3605,34.06282,14,0,0/600x600?access_token=pk.eyJ1IjoibHVrZXdlc3RieSIsImEiOiJjanVrb3phNGsxeTdxNDNwZ2MybTQwNHl3In0.cD1c7AwcVaia7W4g-f5gLQ" />
+            <h3 class="events-title">July Hub Meeting</h3>
+            <div class="events-icon">
+              <span class="material-icons">event</span>
+            </div>
+            <div class="events-detail-section">
+              
+              
+              <p class="events-start-date">
+                July 2, 2019
+              </p>
+              <p>
+                1:00am - 3:00am
+              </p>
+            </div>
+            <div class="events-icon">
+              <span class="material-icons">place</span>
+            </div>
+            <div class="events-detail-section">
+              <p class="events-location-name">
+                Johnie&#39;s Coffee Shop
+              </p>
+              <p>6099 Wilshire Blvd, Los Angeles, CA 90048</p>
+            </div>
+            
+              <div class="events-icon">
+                <span class="material-icons">accessible</span>
+              </div>
+              <div class="events-detail-section">
+                Wheelchair Accessible
+              </div>
+            
+            <div class="events-icon">
+              <span class="material-icons">info</span>
+            </div>
+            <div class="events-detail-section events-info-details">
+              <p>Sunrise Movement is a youth led organization aiming to stop climate change and create millions of good jobs in the process.</p>
+
+<p>Every couple of weeks we experience yet another climate disaster. All the while, our politicians refuse to step up and join us in this fight head on.</p>
+
+<p>Come join us at our sixth hub meeting where we will prepare to #ChangeTheDebate.</p>
+
+            </div>
+          </div>
+        </div>
+      
+        <div class="shared-card events-container">
+          
+          
+          
+          
+          
+          
+          
+          <div class="shared-card-inner events-container-inner">
+            <img class="events-map" src="https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s&#43;000%28-118.540405,34.25727%29/-118.540405,34.25727,14,0,0/600x600?access_token=pk.eyJ1IjoibHVrZXdlc3RieSIsImEiOiJjanVrb3phNGsxeTdxNDNwZ2MybTQwNHl3In0.cD1c7AwcVaia7W4g-f5gLQ" />
+            <h3 class="events-title">Canvass for Loraine</h3>
+            <div class="events-icon">
+              <span class="material-icons">event</span>
+            </div>
+            <div class="events-detail-section">
+              
+              
+              <p class="events-start-date">
+                July 5, 2019
+              </p>
+              <p>
+                3:00pm - 7:00pm
+              </p>
+            </div>
+            <div class="events-icon">
+              <span class="material-icons">place</span>
+            </div>
+            <div class="events-detail-section">
+              <p class="events-location-name">
+                The Coffee Bean &amp; Tea Leaf
+              </p>
+              <p>18705 Devonshire St, Northridge, CA 91324</p>
+            </div>
+            
+            <div class="events-icon">
+              <span class="material-icons">info</span>
+            </div>
+            <div class="events-detail-section events-info-details">
+              <p>Ut ut fringilla lacus, vitae bibendum odio. Phasellus sed quam neque. Proin sed scelerisque lacus. Suspendisse posuere eros molestie, dictum ante non, porttitor lorem. Duis tempus malesuada erat vitae rutrum. Phasellus magna elit, faucibus sit amet feugiat a, tristique id est.</p>
+
+<p>Aliquam euismod purus quis dapibus ullamcorper. Maecenas convallis ex et diam consequat hendrerit. Curabitur euismod hendrerit velit non eleifend. Nullam pulvinar quis mi gravida convallis. Donec sed erat et nibh vulputate laoreet. Integer et libero enim. Sed id felis pharetra nibh imperdiet dignissim eget a diam. Aliquam nec consequat risus. Fusce tempor tristique dui, ut consectetur risus elementum at.</p>
+
+            </div>
+          </div>
+        </div>
+      
+      </div>
+    </section>
+  </noscript>
+
+  </main>
+</body>
+</html>

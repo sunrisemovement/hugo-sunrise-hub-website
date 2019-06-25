@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/</loc>
+    <lastmod>2019-06-23T18:20:13+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/news/lorem-ipsum-dolor-sit-amet/</loc>
+    <lastmod>2019-06-23T18:20:13+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/news/</loc>
+    <lastmod>2019-06-23T18:20:13+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/events/2019-07-05-canvass-for-loraine/</loc>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/events/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/events/2019-07-02-july-hub-meeting/</loc>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/events/2019-06-27-south-la-debate-watch-party-to-changethedebate/</loc>
+  </url>
+  
+  <url>
+    <loc>https://sunrisemovement.github.io/hugo-sunrise-hub-website/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

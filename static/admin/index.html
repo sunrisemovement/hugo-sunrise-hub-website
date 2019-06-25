@@ -16,15 +16,17 @@
   <script src="https://unpkg.com/netlify-cms-backend-fs@0.4.4/dist/index.js"></script>
   <script src="start.js"></script>
   <script>
-    const CMS = window.NetlifyCmsApp
-    CMS.registerBackend('file-system', FileSystemBackendClass)
-    const userConfig = {
-      backend: {
-        name: 'file-system',
-        api_root: 'http://localhost:3000/api'
+    (async function() {
+      const CMS = window.NetlifyCmsApp
+      CMS.registerBackend('file-system', FileSystemBackendClass)
+      try {
+        const resp = await fetch('./backend.json')
+        const backend = await resp.json()
+        window.startCMS(CMS, { backend })
+      } catch (_) {
+        window.startCMS(CMS, {})
       }
-    }
-    window.startCMS(CMS, userConfig)
+    }())
   </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 ---
 top:
-  image: /images/uploads/no-excuses.jpg
+  image: /images/uploads/home-top-image.jpg
   intro: >-
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

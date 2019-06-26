@@ -5,7 +5,7 @@
   const makeConfig = (config) => ({
     backend: config.backend,
     load_config_file: false,
-    media_folder: mergePath(config.basePath, 'static/images/uploads'),
+    media_folder: mergePath(config.base_path, 'static/images/uploads'),
     public_folder: '/images/uploads',
 
     collections: [
@@ -13,7 +13,7 @@
         name: 'news',
         label: 'News',
         editor: { preview: false },
-        folder: mergePath(config.basePath, 'content/news'),
+        folder: mergePath(config.base_path, 'content/news'),
         create: true,
         identifier_field: 'title',
         slug: '{{fields.slug}}',
@@ -55,7 +55,7 @@
         label: "Events",
         editor: { preview: false },
         slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
-        folder: mergePath(config.basePath, 'content/events'),
+        folder: mergePath(config.base_path, 'content/events'),
         create: true,
         identifier_field: 'title',
         fields: [
@@ -123,7 +123,7 @@
         editor: { preview: false },
         files: [
           {
-            file: mergePath(config.basePath, 'content/_index.md'),
+            file: mergePath(config.base_path, 'content/_index.md'),
             label: 'Home',
             name: 'home',
             fields: [
@@ -173,7 +173,7 @@
         editor: { preview: false },
         files: [
           {
-            file: mergePath(config.basePath, 'data/settings/site.json'),
+            file: mergePath(config.base_path, 'data/settings/site.json'),
             label: 'Site Settings',
             name: 'site',
             fields: [

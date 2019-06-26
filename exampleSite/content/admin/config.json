@@ -1,7 +1,0 @@
-{
-  "backend": {
-    "repo": "sunrisemovement/hugo-sunrise-hub-website",
-    "name": "github"
-  },
-  "basePath": "exampleSite"
-}

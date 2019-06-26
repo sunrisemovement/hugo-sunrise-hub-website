@@ -18,7 +18,6 @@
     "netlify-cms-backend-fs": "0.4.4",
     "npm-run-all": "4.1.5"
   },
-  "fileSystemPath": "exampleSite",
   "devDependencies": {
     "lit-element": "2.2.0"
   }

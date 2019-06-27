@@ -1,10 +1,11 @@
 // @ts-check
 
 import { LitElement, html, css, TemplateResult, CSSResult } from 'https://unpkg.com/lit-element@2.2.0/lit-element.js?module'
+import { classMap } from 'https://unpkg.com/lit-html@1.1.0/directives/class-map.js?module'
 import DayOfYear from './DayOfYear.js'
 import MonthOfYear from './MonthOfYear.js'
 import DayRange from './DayRange.js'
-import TimeOfDay from './TimeOfDay.js'
+import Event from './Event.js'
 
 /**
  * @typedef {import('https://unpkg.com/lit-element@2.2.0/lit-element.js?module').PropertyDeclarations} PropertyDeclarations
@@ -18,6 +19,9 @@ const styles = css`
     display: block;
     min-height: 0;
     position: relative;
+  }
+  * {
+    box-shadow: border-box;
   }
   .outer-card {
     background-color: var(--color-charcoal);
@@ -129,7 +133,7 @@ const styles = css`
     }
     .calendar-grid-day.has-event:hover {
       opacity: 1;
-      background-color: var(--state-overly-color-hover);
+      background-color: var(--state-overlay-color-hover);
     }
 
   .calendar-grid-number {
@@ -201,9 +205,15 @@ const styles = css`
     border-radius: var(--shape-border-radius);
     background-color: var(--elevation-overlay-color-02dp);
     margin-bottom: 16px;
+    cursor: pointer;
   }
     .events-event:last-child {
       margin-bottom: 0;
+    }
+    .events-event.selected {
+      background-color: var(--state-overlay-color-selected);
+      border: 2px solid var(--state-border-color-selected);
+      padding: 14px;
     }
   .events-event-title {
     font-size: 20px;
@@ -223,117 +233,32 @@ const styles = css`
 
 const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
-const MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24
-
-export class Event {
-  /**
-   * @param {Object} data
-   * @param {string} data.title
-   * @param {string} data.start
-   * @param {string} data.end
-   * @param {Object} data.location
-   * @param {string} data.location.name
-   * @param {string} data.location.address
-   */
-  constructor({
-    title,
-    start,
-    end,
-    location,
-  }) {
-    const startDate = new Date(start)
-    const endDate = new Date(end)
-
-    /**
-     * @private
-     * @type string
-     */
-    this._title = title
-
-    /**
-     * @private
-     * @type DayOfYear
-     */
-    this._date = new DayOfYear(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate()
-    )
-
-    /**
-     * @private
-     * @type TimeOfDay
-     */
-    this._start = new TimeOfDay(startDate.valueOf() % MILLIS_IN_A_DAY)
-    
-    /**
-     * @private
-     * @type TimeOfDay
-     */
-    this._end = new TimeOfDay(endDate.valueOf() % MILLIS_IN_A_DAY)
-
-    /**
-     * @private
-     * @type string
-     */
-    this._place = location.name
-
-    /**
-     * @private
-     * @type string
-     */
-    this._address = location.address
-  }
-
-  /**
-   * @pubilc
-   * @type string
-   */
-  get title() { return this._title }
-
-  /**
-   * @public
-   * @type DayOfYear
-   */
-  get date() { return this._date }
-
-  /**
-   * @public
-   * @type TimeOfDay
-   */
-  get start() { return this._start }
-
-  /**
-   * @public
-   * @type TimeOfDay
-   */
-  get end() { return this._end }
-
-  /**
-   * @public
-   * @type string
-   */
-  get place() { return this._place }
-
-  /**
-   * @public
-   * @type string
-   */
-  get address() { return this._address }
-}
-
 /**
  * @class Calendar
  */
 export default class Calendar extends LitElement {
+  static register() {
+    if (!window.customElements.get('sunrise-events-calendar')) {
+      window.customElements.define('sunrise-events-calendar', Calendar)
+    }
+
+    return window.customElements.whenDefined('sunrise-events-calendar')
+  }
+
   constructor() {
     super()
 
     /**
-     * @private
+     * @public
      * @type Array<Event>
      */
     this.events = []
+
+    /**
+     * @public
+     * @type Event | null
+     */
+    this.selected = null
 
     /**
      * @private
@@ -350,6 +275,7 @@ export default class Calendar extends LitElement {
     return {
       events: { attribute: false },
       month: { attribute: false },
+      selected: { attribute: false },
     }
   }
 
@@ -410,30 +336,18 @@ export default class Calendar extends LitElement {
 
   /**
    * @private
-   * @returns TemplateResult
+   * @param {Event} event
    */
-  _renderCalendarSwitcher() {
-    return html`
-      <div class="calendar-switcher">
-        <button
-          class="calendar-switcher-button"
-          @click=${() => this._onPreviousMonthClick()}>
-          <span class="icon">chevron_left</span>
-        </button>
-        <div>${this.month.formatForSwitcher()}</div>
-        <button
-          class="calendar-switcher-button"
-          @click=${() => this._onNextMonthClick()}>
-          <span class="icon">chevron_right</span>
-        </button>
-      </div>
-    `
+  _onEventClick(event) {
+    this.selected = event
+    this.dispatchEvent(new CustomEvent('select'))
   }
 
   /**
+   * @protected
    * @returns TemplateResult
    */
-  _renderCalendarGrid() {
+  render() {
     const eventDays = new Set(this.events.map(e => e.date.toString('iso8601')))
 
     /**
@@ -445,92 +359,75 @@ export default class Calendar extends LitElement {
     ))
 
     return html`
-      <div class="calendar-grid">
-        ${weekdays.map(w => html`<div class="calendar-grid-weekday">${w}</div>`)}
-        ${days.map(d => {
-          const hasEvent = eventDays.has(d.toString('iso8601'))
-          const outOfMonth = !this.month.contains(d)
-
-          if (hasEvent) {
-            return html`
-              <button
-                class="calendar-grid-day has-event ${outOfMonth ? 'out-of-month' : ''}"
-                @click=${() => this._onDayClick(d)}>
-                <span class="calendar-grid-number has-event">${d.day}</span>
-                <span class="calendar-grid-event-marker"></span>
-              </button>
-            `
-          }
-
-          return html`
-            <div class="calendar-grid-day ${outOfMonth ? 'out-of-month' : ''}">
-              <span class="calendar-grid-number">${d.day}</span>
-            </div>
-          `
-        })}
-      </div>
-    `
-  }
-
-  /**
-   * @private
-   * @returns TemplateResult
-   */
-  _renderCalendar() {
-    return html`
-      <div class="calendar">
-        ${this._renderCalendarSwitcher()}
-        ${this._renderCalendarGrid()}
-      </div>
-    `
-  }
-
-  /**
-   * @private
-   * @param {Array<Event>} events 
-   */
-  _renderDayGroup(events) {
-    return html`
-      <div class="events-day-group" data-day="${events[0].date.toString('iso8601')}">
-        <div class="events-day-heading">${events[0].date.toString('full')}</div>
-        <div class="events-inner-list">
-          ${events.map(e => {
-            return html`
-              <div class="events-event">
-                <div class="events-event-title">${e.title}</div>
-                <div class="events-event-time">${e.start.toString('full')} - ${e.end.toString('full')}</div>
-                <div class="events-event-place">${e.place}</div>
-                <div class="events-event-address">${e.address}</div>
-              </div>
-            `
-          })}
-        </div>
-      </div>
-    `
-  }
-
-  /**
-   * @private
-   * @returns TemplateResult
-   */
-  _renderEvents() {
-    return html`
-      <div class="events" data-events-scroll>
-        ${this._eventsByDay(this.events).map((e) => this._renderDayGroup(e))}
-      </div>
-    `
-  }
-
-  /**
-   * @protected
-   * @returns TemplateResult
-   */
-  render() {
-    return html`
       <div class="outer-card">
         <div class="inner-card">
-          ${this._renderCalendar()}
-          ${this._renderEvents()}
+          <div class="calendar">
+            <div class="calendar-switcher">
+              <button
+                class="calendar-switcher-button"
+                @click=${() => this._onPreviousMonthClick()}>
+                <span class="icon">chevron_left</span>
+              </button>
+              <div>${this.month.formatForSwitcher()}</div>
+              <button
+                class="calendar-switcher-button"
+                @click=${() => this._onNextMonthClick()}>
+                <span class="icon">chevron_right</span>
+              </button>
+            </div>
+            <div class="calendar-grid">
+              ${weekdays.map(w => html`<div class="calendar-grid-weekday">${w}</div>`)}
+              ${days.map(d => {
+                const hasEvent = eventDays.has(d.toString('iso8601'))
+                const outOfMonth = !this.month.contains(d)
+
+                if (hasEvent) {
+                  return html`
+                    <button
+                      class="calendar-grid-day has-event ${outOfMonth ? 'out-of-month' : ''}"
+                      @click=${() => this._onDayClick(d)}>
+                      <span class="calendar-grid-number has-event">${d.day}</span>
+                      <span class="calendar-grid-event-marker"></span>
+                    </button>
+                  `
+                }
+
+                return html`
+                  <div class="calendar-grid-day ${outOfMonth ? 'out-of-month' : ''}">
+                    <span class="calendar-grid-number">${d.day}</span>
+                  </div>
+                `
+              })}
+            </div>
+          </div>
+          ${this.events.length ?
+            html`
+              <div class="events" data-events-scroll>
+                ${this._eventsByDay(this.events).map((events) => {
+                  return html`
+                    <div class="events-day-group" data-day="${events[0].date.toString('iso8601')}">
+                      <div class="events-day-heading">${events[0].date.toString('full')}</div>
+                      <div class="events-inner-list">
+                        ${events.map(e => {
+                          return html`
+                            <div
+                              class=${classMap({ 'events-event': true, selected: this.selected === e })}
+                              @click=${() => this._onEventClick(e)}>
+                              <div class="events-event-title">${e.title}</div>
+                              <div class="events-event-time">${e.start.toString('full')} - ${e.end.toString('full')}</div>
+                              <div class="events-event-place">${e.place}</div>
+                              <div class="events-event-address">${e.address}</div>
+                            </div>
+                          `
+                        })}
+                      </div>
+                    </div>
+                  `
+                })}
+              </div>
+            ` :
+            html``
+          }
         </div>
       </div>
     `

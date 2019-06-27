@@ -1,3 +1,8 @@
 {{ $start := (time .Params.start_date).Local }}
 {{ $end := (time .Params.end_date).Local }}
-{{ return dict "details" (markdownify .Params.details) "title" .Params.title "start" $start "end" $end "location" (dict "address" .Params.location.address "name" .Params.location.name) "isAccessible" .Params.is_accessible }}
+{{ $baseGeocodeUrl := "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?format=json&benchmark=Public_AR_Current&vintage=Current_Current&" }}
+{{ $geocodeUrl := strings.TrimLeft " " (strings.TrimRight " " (string (delimit (slice $baseGeocodeUrl (querify "address" .Params.location.address)) ""))) }}
+{{ $geocodeJson := getJSON $geocodeUrl }}
+{{ $coordinateJson := (index $geocodeJson.result.addressMatches 0).coordinates }}
+{{ $coordinates := dict "longitude" $coordinateJson.x "latitude" $coordinateJson.y }}
+{{ return dict "details" (markdownify .Params.details) "title" .Params.title "start" $start "end" $end "location" (dict "address" .Params.location.address "name" .Params.location.name "coordinates" $coordinates) "is_accessible" .Params.is_accessible }}

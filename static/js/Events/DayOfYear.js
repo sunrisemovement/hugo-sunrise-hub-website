@@ -31,7 +31,7 @@ export default class DayOfYear {
 
     /**
      * @private
-     * @type (DayOfYear|null)
+     * @type DayOfYear | null
      */
     this._nearestPreviousSunday = null
     

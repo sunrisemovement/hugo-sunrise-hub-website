@@ -1,5 +1,0 @@
-{{ $data := apply (sort (where .Site.RegularPages "Section" "==" "events") "" "asc") "partial" "format_event_for_js.html" "." }}
-<script>
-  window._data = window._data || {}
-  window._data.events = {{ $data }}
-</script>

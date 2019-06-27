@@ -4,18 +4,13 @@
 {{ end }}
 
 {{ define "scripts" }}
-  {{ partial "window_data_events.html" . }}
-  <script type="module">
-    import Calendar, { Event } from '{{ "js/Calendar.js" | relURL }}'
-    window.domready(() => {
-      customElements.whenDefined('sunrise-calendar').then(() => {
-        const calendar = document.querySelector('sunrise-calendar')
-        const events = window._data.events.map(e => new Event(e))
-        calendar.events = events.concat(events).concat(events)
-      })
-      customElements.define('sunrise-calendar', Calendar)
-    })
+  {{ $events := partialCached "get_home_events.html" . }}
+  <script>
+    window._data = window._data || {}
+    window._data.events = {{ $events }}
+    window._data.hubName = {{ $.Site.Data.settings.site.hubNameShort }}
   </script>
+  <script type="module" src="/js/Home.js"></script>
 {{ end }}
 
 {{ define "main" }}
@@ -79,13 +74,13 @@
       </div>
     </section>
   {{ end }}
+
+  {{ $events := partialCached "get_home_events.html" . }}
   <section
     id="events"
     class="events-interactive">
     <h2 class="shared-section-header">Events</h2>
-    <div class="events-interactive-container">
-      <sunrise-calendar></sunrise-calendar>
-    </div>
+    <sunrise-events></sunrise-events>
   </section>
 
   <noscript>
@@ -96,29 +91,23 @@
         Events
       </h2>
       <div class="events-scroller">
-      {{ range sort (where .Site.RegularPages "Section" "==" "events") ".Params.start_date" "asc" }}
+      {{ range $events }}
         <div class="shared-card events-container">
-          {{ $baseGeocodeUrl := "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?format=json&benchmark=Public_AR_Current&vintage=Current_Current&" }}
-          {{ $geocodeUrl := strings.TrimLeft " " (strings.TrimRight " " (string (delimit (slice $baseGeocodeUrl (querify "address" .Params.location.address)) ""))) }}
-          {{ $geocodeJson := getJSON $geocodeUrl }}
-          {{ $coordinate := (index $geocodeJson.result.addressMatches 0).coordinates }}
-          {{ $coordinateStr := delimit (slice (string $coordinate.x) (string $coordinate.y)) "," }}
+          {{ $coordinateStr := delimit (slice (string .location.coordinates.longitude) (string .location.coordinates.latitude)) "," }}
           {{ $baseMapParams := querify "access_token" "pk.eyJ1IjoibHVrZXdlc3RieSIsImEiOiJjanVrb3phNGsxeTdxNDNwZ2MybTQwNHl3In0.cD1c7AwcVaia7W4g-f5gLQ" }}
           {{ $mapUrl := delimit (slice "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+000(" $coordinateStr ")/" $coordinateStr ",14,0,0/600x600?" $baseMapParams) "" }}
           <div class="shared-card-inner events-container-inner">
             <img class="events-map" src="{{ $mapUrl }}" />
-            <h3 class="events-title">{{ .Params.title }}</h3>
+            <h3 class="events-title">{{ .title }}</h3>
             <div class="events-icon">
               {{ partial "icon.html" "event" }}
             </div>
             <div class="events-detail-section">
-              {{ $startDate := (time .Params.start_date).Local }}
-              {{ $endDate := (time .Params.end_date).Local }}
               <p class="events-start-date">
-                {{ dateFormat "January 2, 2006" $startDate }}
+                {{ dateFormat "January 2, 2006" .start }}
               </p>
               <p>
-                {{ dateFormat "3:00pm" $startDate }} - {{ dateFormat "3:00pm" $endDate }}
+                {{ dateFormat "3:00pm" .start }} - {{ dateFormat "3:00pm" .end }}
               </p>
             </div>
             <div class="events-icon">
@@ -126,11 +115,11 @@
             </div>
             <div class="events-detail-section">
               <p class="events-location-name">
-                {{ .Params.location.name }}
+                {{ .location.name }}
               </p>
-              <p>{{ .Params.location.address }}</p>
+              <p>{{ .location.address }}</p>
             </div>
-            {{ if .Params.is_accessible }}
+            {{ if .is_accessible }}
               <div class="events-icon">
                 {{ partial "icon.html" "accessible"}}
               </div>
@@ -142,7 +131,7 @@
               {{ partial "icon.html" "info"}}
             </div>
             <div class="events-detail-section events-info-details">
-              {{ .Params.details | markdownify }}
+              {{ .details }}
             </div>
           </div>
         </div>

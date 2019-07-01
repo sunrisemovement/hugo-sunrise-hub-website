@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="{{ (resources.Get "base.css").Permalink }}" />
   {{- block "styles" . }}{{- end }}
   <script>
-    try { document.documentElement.classList.remove('nojs') } catch (e) { }
+    try { document.documentElement.classList.remove('nojs') } catch (e) {}
     window._data = {}
     window._data.basePath = '{{ $.Site.BaseURL }}'.replace(window.location.origin, '') || '/'
     window._data.serviceWorkerUrl = {{ index $.Site.Data.theme.private.assets "service-worker.js" | relURL }}

@@ -17,7 +17,6 @@
       navigator.serviceWorker.register(window._data.serviceWorkerUrl, { scope: window._data.serviceWorkerUrl })
     }
   </script>
-  <script src="{{ index $.Site.Data.theme.private.assets "service-worker-start.js" | relURL }}" async></script>
   {{- block "scripts" . }}{{- end }}
 </head>
 <body>

@@ -4216,7 +4216,6 @@ let Map = class Map extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitElement
         super(...arguments);
         this.latitude = 0;
         this.longitude = 0;
-        this.map = null;
         this.container = document.createElement('div');
     }
     async connectedCallback() {
@@ -4231,11 +4230,6 @@ let Map = class Map extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitElement
     }
     update(props) {
         super.update(props);
-    }
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        this.map && this.map.dispose();
-        this.map = null;
     }
     render() {
         return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `${this.container}`;
@@ -4519,4 +4513,4 @@ domready__WEBPACK_IMPORTED_MODULE_0___default()(() => {
 /***/ })
 
 /******/ });
-//# sourceMappingURL=home.47e98944509722013a48.js.map
+//# sourceMappingURL=home.6bda97f87d83bfabf547.js.map

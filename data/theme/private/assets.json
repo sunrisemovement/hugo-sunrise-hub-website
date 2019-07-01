@@ -1,8 +1,6 @@
 {
-  "home.js": "/sunrise-hub-website/build/home.47e98944509722013a48.js",
-  "home.js.map": "/sunrise-hub-website/build/home.47e98944509722013a48.js.map",
+  "home.js": "/sunrise-hub-website/build/home.6bda97f87d83bfabf547.js",
+  "home.js.map": "/sunrise-hub-website/build/home.6bda97f87d83bfabf547.js.map",
   "service-worker.js": "/sunrise-hub-website/build/../../service-worker.js",
-  "service-worker.js.map": "/sunrise-hub-website/build/../../service-worker.js.map",
-  "service-worker-start.js": "/sunrise-hub-website/build/service-worker-start.47e98944509722013a48.js",
-  "service-worker-start.js.map": "/sunrise-hub-website/build/service-worker-start.47e98944509722013a48.js.map"
+  "service-worker.js.map": "/sunrise-hub-website/build/../../service-worker.js.map"
 }

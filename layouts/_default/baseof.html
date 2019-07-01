@@ -8,7 +8,10 @@
   <script>
     try { document.documentElement.classList.remove('nojs') } catch (e) {}
     window._data = {}
-    window._data.basePath = '{{ $.Site.BaseURL }}'.replace(window.location.origin, '') || '/'
+    window._data.basePath = JSON.parse('"{{ $.Site.BaseURL  }}"')
+      .replace(window.location.protocol, '')
+      .replace('//', '')
+      .replace(window.location.host, '')
     window._data.serviceWorkerUrl = {{ index $.Site.Data.theme.private.assets "service-worker.js" | relURL }}
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(window._data.serviceWorkerUrl, { scope: window._data.serviceWorkerUrl })

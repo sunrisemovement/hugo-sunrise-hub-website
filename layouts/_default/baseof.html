@@ -14,7 +14,7 @@
       .replace(window.location.host, '')
     window._data.serviceWorkerUrl = {{ index $.Site.Data.theme.private.assets "service-worker.js" | relURL }}
     if (navigator.serviceWorker) {
-      navigator.serviceWorker.register(window._data.serviceWorkerUrl, { scope: window._data.serviceWorkerUrl })
+      navigator.serviceWorker.register(window._data.serviceWorkerUrl, { scope: window._data.basePath })
     }
   </script>
   {{- block "scripts" . }}{{- end }}

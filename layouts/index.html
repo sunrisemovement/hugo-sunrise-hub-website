@@ -1,16 +1,15 @@
 {{ define "styles" }}
-  {{ $homeCss := relURL "css/home.css" }}
-  <link rel="stylesheet" href="{{ $homeCss }}" />
+  {{ $homeCss := resources.Get "Home.css" | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $homeCss.Permalink }}" />
 {{ end }}
 
 {{ define "scripts" }}
-  {{ $events := partialCached "get_home_events.html" . }}
   <script>
     window._data = window._data || {}
-    window._data.events = {{ $events }}
+    window._data.events = {{ $.Site.Data.actionnetwork.events }}
     window._data.hubName = {{ $.Site.Data.settings.site.hubNameShort }}
   </script>
-  <script type="module" src="/js/Home.js"></script>
+  <script src="{{ index $.Site.Data.theme.private.assets "home.js" | relURL }}" async></script>
 {{ end }}
 
 {{ define "main" }}
@@ -75,7 +74,7 @@
     </section>
   {{ end }}
 
-  {{ $events := partialCached "get_home_events.html" . }}
+  {{ $events := $.Site.Data.actionnetwork.events }}
   <section
     id="events"
     class="events-interactive">
@@ -93,7 +92,7 @@
       <div class="events-scroller">
       {{ range $events }}
         <div class="shared-card events-container">
-          {{ $coordinateStr := delimit (slice (string .location.coordinates.longitude) (string .location.coordinates.latitude)) "," }}
+          {{ $coordinateStr := delimit (slice (string .coordinates.longitude) (string .coordinates.latitude)) "," }}
           {{ $baseMapParams := querify "access_token" "pk.eyJ1IjoibHVrZXdlc3RieSIsImEiOiJjanVrb3phNGsxeTdxNDNwZ2MybTQwNHl3In0.cD1c7AwcVaia7W4g-f5gLQ" }}
           {{ $mapUrl := delimit (slice "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+000(" $coordinateStr ")/" $coordinateStr ",14,0,0/600x600?" $baseMapParams) "" }}
           <div class="shared-card-inner events-container-inner">
@@ -107,7 +106,7 @@
                 {{ dateFormat "January 2, 2006" .start }}
               </p>
               <p>
-                {{ dateFormat "3:00pm" .start }} - {{ dateFormat "3:00pm" .end }}
+                {{ dateFormat "3:00pm" .start }}
               </p>
             </div>
             <div class="events-icon">
@@ -115,23 +114,15 @@
             </div>
             <div class="events-detail-section">
               <p class="events-location-name">
-                {{ .location.name }}
+                {{ .place }}
               </p>
-              <p>{{ .location.address }}</p>
+              <p>{{ .address }}</p>
             </div>
-            {{ if .is_accessible }}
-              <div class="events-icon">
-                {{ partial "icon.html" "accessible"}}
-              </div>
-              <div class="events-detail-section">
-                Wheelchair Accessible
-              </div>
-            {{ end }}
             <div class="events-icon">
               {{ partial "icon.html" "info"}}
             </div>
             <div class="events-detail-section events-info-details">
-              {{ .details }}
+              {{ .description }}
             </div>
           </div>
         </div>

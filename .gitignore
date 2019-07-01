@@ -1,3 +1,7 @@
 node_modules
 .DS_Store
 exampleSite/public
+exampleSite/data/actionnetwork
+.env
+.cache/
+exampleSite/resources/_gen

@@ -1,5 +1,5 @@
 [build]
-  command = "hugo --gc -b $URL --minify"
+  command = "../scripts/sync_action_network.py --token=$ACTION_NETWORK_TOKEN --output=./data/actionnetwork/events.json  && hugo --gc -b $URL --minify"
   base    = "exampleSite"
   publish = "exampleSite/public"
 

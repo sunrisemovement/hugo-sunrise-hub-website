@@ -1,30 +1,21 @@
-//@ts-check
-
-/**
- * @typedef {'full'|'iso8601'} Format
- */
+export type Format =
+  | 'iso8601'
+  | 'full'
 
 export default class TimeOfDay {
-  /**
-   * @param {number} millis
-   */
-  constructor(millis) {
-    /**
-     * @private
-     * @type number
-     */
-    this._millis = millis
-  }
+  constructor(
+    private millis: number
+  ) {}
 
   /**
    * @public
    * @param {Format|undefined} format
    * @returns string
    */
-  toString(format) {
+  public toString(format?: Format): string {
     switch(format) {
       case 'full': {
-        const date = new Date(this._millis)
+        const date = new Date(this.millis)
         const formatter = new Intl.DateTimeFormat('en-US', {
           hour12: true,
           hour: 'numeric',
@@ -36,7 +27,7 @@ export default class TimeOfDay {
         throw new Error('not implemented')
       }
       default:
-        return `<TimeOfDay millis=${this._millis}>`
+        return `<TimeOfDay millis=${this.millis}>`
     }
   }
 }

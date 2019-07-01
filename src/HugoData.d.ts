@@ -5,6 +5,7 @@ declare global {
     events: Array<Options>,
     hubName: string,
     serviceWorkerUrl: string,
+    basePath: string,
   }
 
   interface Window {

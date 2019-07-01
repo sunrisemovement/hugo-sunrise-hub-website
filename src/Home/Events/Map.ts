@@ -90,7 +90,6 @@ export default class Map extends LitElement {
   @property({ attribute: false })
   public longitude: number = 0
 
-  private map: import('ol/Map').default | null = null
   private container: HTMLDivElement = document.createElement('div')
 
   async connectedCallback() {
@@ -108,12 +107,6 @@ export default class Map extends LitElement {
 
   update(props: any) {
     super.update(props)
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback()
-    this.map && this.map.dispose()
-    this.map = null
   }
 
   render() {

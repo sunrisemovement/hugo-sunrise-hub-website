@@ -8,7 +8,6 @@ module.exports = {
   entry: {
     'home': './src/Home/index.ts',
     'service-worker': './src/ServiceWorker/index.ts',
-    'service-worker-start': './src/ServiceWorker/start.ts',
   },
   module: {
     rules: [

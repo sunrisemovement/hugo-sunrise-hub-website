@@ -13,8 +13,6 @@ class Range implements Iterable<number> {
     }
   }
 }
-
-
 type Position = { x: number, y: number }
 const radians = (degrees: number) =>  degrees * (Math.PI/180)
 const numTiles = (zoom: number): number => 2 ** zoom
@@ -38,7 +36,6 @@ const tileHeight = 256
 const tileUrl = (x: number, y: number, z: number): string => {
   return `https://maps.wikimedia.org/osm-intl/${z}/${x}/${y}.png`
 }
-
 const create = async (lat: number, lon: number, zoom: number) => {
   const tilesX = 4
   const tilesY = 4
@@ -48,7 +45,6 @@ const create = async (lat: number, lon: number, zoom: number) => {
   const { x: xAbsolute, y: yAbsolute } = latLonToPos(lat, lon, zoom)
   const latCenterDiff = Math.trunc((xAbsolute - xOffset) * tileWidth)
   const lonCenterDiff = Math.trunc((yAbsolute - yOffset) * tileHeight)
-
   const tiles = []
   for (var y of yRow) {
     const row = []
@@ -57,7 +53,6 @@ const create = async (lat: number, lon: number, zoom: number) => {
     }
     tiles.push(row)
   }
-
   const imageWidth = tilesX * tileWidth
   const imageHeight = tilesY * tileHeight
   const canvas = document.createElement('canvas')
@@ -66,7 +61,6 @@ const create = async (lat: number, lon: number, zoom: number) => {
   const context = canvas.getContext('2d') as CanvasRenderingContext2D
   context.fillStyle = '#fff'
   context.fillRect(0, 0, imageWidth, imageHeight)
-
   const promises: Array<Promise<any>> = []
   let rowOffset = 0
   for (let row of tiles) {

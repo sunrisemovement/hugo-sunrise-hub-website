@@ -5,10 +5,15 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,900|Material+Icons&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ (resources.Get "base.css").Permalink }}" />
   {{- block "styles" . }}{{- end }}
+  <script>
+    try { document.documentElement.classList.remove('nojs') } catch (e) { }
+    window._data = {}
+    window._data.serviceWorkerUrl = {{ index $.Site.Data.theme.private.assets "service-worker.js" | relURL }}
+  </script>
+  <script src="{{ index $.Site.Data.theme.private.assets "service-worker-start.js" | relURL }}" async></script>
   {{- block "scripts" . }}{{- end }}
 </head>
 <body>
-  <script>try { document.documentElement.classList.remove('nojs') } catch (e) { }</script>
   <main>
     {{- block "main" . }}{{- end }}
   </main>

@@ -30,7 +30,13 @@
         api_root: 'http://localhost:1316/api',
       }
       {{ end }}
-      window.startCMS(CMS, userConfig)
+
+      const publicPath = JSON.parse('"{{ $.Site.BaseURL  }}"')
+        .replace(window.location.protocol, '')
+        .replace('//', '')
+        .replace(window.location.host, '')
+
+      window.startCMS(CMS, userConfig, publicPath)
     }())
   </script>
 </body>

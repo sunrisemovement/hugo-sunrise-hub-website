@@ -2,11 +2,11 @@
   const mergePath = (base, rest) => {
     return base ? base + '/' + rest : rest
   }
-  const makeConfig = (config) => ({
+  const makeConfig = (config, publicPath) => ({
     backend: config.backend,
     load_config_file: false,
     media_folder: mergePath(config.base_path, 'static/images/uploads'),
-    public_folder: (config.publicPath || '/') + 'images/uploads',
+    public_folder: (publicPath || '/') + 'images/uploads',
 
     collections: [
       {
@@ -198,9 +198,9 @@
     ],
   })
 
-  window.startCMS = function (CMS, userConfig) {
+  window.startCMS = function (CMS, userConfig, publicPath) {
     CMS.init({
-      config: makeConfig(userConfig),
+      config: makeConfig(userConfig, publicPath),
     })
   }
 }())

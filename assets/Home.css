@@ -39,37 +39,33 @@
 
 .top {
   background-image: var(--image);
-  height: 50vh;
+  height: 60vh;
   position: relative;
   padding: 32px 16px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   background-size: cover;
 }
 
+.top-logo {
+  width: 200px;
+}
+
 .top-intro {
-  background-color: var(--color-charcoal);
-  border-radius: var(--shape-border-radius);
-  box-shadow: var(--elevation-box-shadow-02dp);
-  padding: 16px;
   max-width: 960px;
+  text-align: center;
 }
 
 .top-hub-name {
   color: var(--color-yellow);
   font-weight: 900;
   text-transform: uppercase;
-  font-size: 36px;
+  font-size: 72px;
   line-height: 1;
   margin-bottom: 12px;
-  letter-spacing: 0.02em;
-}
-
-.top-details {
-  font-size: 20px;
-  line-height: 25px;
+  letter-spacing: 0.03em;
 }
 
 /*#endregion */

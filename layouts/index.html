@@ -15,9 +15,16 @@
 {{ define "main" }}
   <section
     class="top"
-    id="top"
-    style="--image:url('{{ .Params.top.image | relURL }}');">
+    id="top">
+    {{ with .Params.top.image }}
+      <img
+        class="top-background"
+        src="{{ .image | relURL }}"
+        style="object-position: {{ lower .position_x }} {{ lower .position_y }};"
+        alt="{{ .alt }}" />
+    {{ end }}
     <div class="top-intro">
+      <img class="top-logo" src="{{ "/sunrise-hub-website/logo.svg" | relURL }}" />
       <h1 class="top-hub-name"> We Are Sunrise {{ $.Site.Data.settings.site.hubNameShort }}</h1>
     </div>
   </section>

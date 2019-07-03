@@ -58,6 +58,12 @@ export default class Details extends LitElement {
               ${unsafeHTML(this.selected.description)}
             </div>
           </div>
+          <div class="actions">
+            <a class="button" href="${this.selected.url}" target="_blank">
+              <sunrise-events-icon .icon=${'launch'}></sunrise-events-icon>
+              <span>RSVP</span>
+            </a>
+          </div>
         </div>
       ` :
       html`
@@ -83,6 +89,8 @@ export default class Details extends LitElement {
     .selected-container {
       display: grid;
       grid-template-rows: 280px auto;
+      min-height: 0;
+      height: 100%;
     }
     .empty-container {
       font-size: 20px;
@@ -98,13 +106,21 @@ export default class Details extends LitElement {
 
     .info {
       padding: 16px;
+      padding-top: 0;
       display: grid;
       grid-template-columns: auto auto;
       grid-auto-flow: dense;
+      min-height: 0;
+      height: 100%;
+      grid-column-gap: 16px;
+      grid-row-gap: 12px;
     }
 
     .title {
       margin: 0;
+      padding: 16px;
+      font-size: 20px;
+      line-height: 1;
     }
 
     .icon {
@@ -127,6 +143,7 @@ export default class Details extends LitElement {
     .date {
       font-size: 20px;
       margin: 0;
+      line-height: 1;
     }
 
     .time {
@@ -136,10 +153,40 @@ export default class Details extends LitElement {
     .place {
       font-size: 20px;
       margin: 0;
+      line-height: 1;
     }
 
     .address {
       margin: 0;
+    }
+    .info-details {
+      overflow: auto;
+      min-height: 0;
+    }
+    .info-details p {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .info-details div:last-child p {
+      margin-bottom: 0;
+    }
+    .actions {
+      padding: 16px;
+      padding-top: 0;
+    }
+    .button {
+      display: inline-grid;
+      grid-template-columns: auto auto;
+      grid-column-gap: 4px;
+      padding: 8px 12px;
+      border-radius: var(--shape-border-radius);
+      box-shadow: var(--elevation-box-shadow-01dp);
+      background-color: var(--color-yellow);
+      color: var(--color-charcoal);
+      text-decoration: none;
+      font-weight: 700;
+      min-width: 84px;
+      place-items: center;
     }
   `
 }

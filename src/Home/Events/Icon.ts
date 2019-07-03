@@ -8,6 +8,7 @@ export type IconName =
   | 'arrow_left'
   | 'chevron_right'
   | 'chevron_left'
+  | 'launch'
 
 @customElement('sunrise-events-icon')
 export default class Icon extends LitElement {

@@ -4,7 +4,7 @@ const path = require('path')
 
 module.exports = {
   devtool: 'source-map',
-  mode: 'development',
+  mode: 'production',
   entry: {
     'home': './src/Home/index.ts',
     'service-worker': './src/ServiceWorker/index.ts',

@@ -6,7 +6,7 @@
     backend: config.backend,
     load_config_file: false,
     media_folder: mergePath(config.base_path, 'static/images/uploads'),
-    public_folder: 'images/uploads',
+    public_folder: '/images/uploads',
 
     collections: [
       {

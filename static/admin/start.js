@@ -12,7 +12,7 @@
       widget: 'object',
       fields: [
         {
-          name: 'image',
+          name: 'src',
           label: 'Image',
           widget: 'image',
           required: true,
@@ -85,16 +85,22 @@
             widget: 'string',
             required: true,
           },
-          {
-            name: 'image',
+          positionedImage({
+            name: 'featured_image',
             label: 'Featured Image',
             widget: 'image',
             required: true,
-          },
+          }),
           {
-            name: 'publishDate',
+            name: 'publish_date',
             label: 'Publish Date',
             widget: 'date',
+            required: true,
+          },
+          {
+            name: 'lead',
+            label: 'Lead',
+            widget: 'text',
             required: true,
           },
           {
@@ -151,6 +157,34 @@
                     required: true,
                   }
                 ]
+              },
+              {
+                name: 'tools',
+                label: 'Tools Section',
+                widget: 'list',
+                hint: 'The Tools Section of the home page lets you share some links with major calls to action that you\'d like visitors to the site to take. Examples of these include signing petitions, viewing a particular and important event on action network, opening a prefilled form to tweet at representatives, and submitting a letter to the editor of a newspaper. All things that can be done right in the browser in just a few minutes but have a strong impact for your hub. Be encouraged to include a least a couple of these at all times, but don\'t have so many that peopel get overwhelmed and skip past either.',
+                fields: [
+                  {
+                    name: 'label',
+                    label: 'Label',
+                    widget: 'string',
+                    hint: 'Describe this tool. For example, it could be a link to a page for writing letters to the editor of the local paper. In that case, you could call someone to do that action by writing "Write a letter to the editor of the Anytown Times-Post Courier"',
+                    required: true,
+                  },
+                  {
+                    name: 'url',
+                    label: 'URL',
+                    widget: 'string',
+                    hint: 'Link to the tool. When the square that shows this tool is clicked it will open the link in a new tab. Following on the example of writing a letter to the editor, you could link to the LTE tool on the Sunrise national site, at https://www.sunrisemovement.org/lte',
+                    required: true,
+                  },
+                  positionedImage({
+                    name: 'image',
+                    label: 'Image',
+                    required: true,
+                    hint: 'This image will show up behind the label text. It doesn\'t have to be directly related to what the tool is, but it should reinforce the intent. If the tool is a link to tweet at local representatives you could use an image of your hub out protesting at a representative\'s office to reinforce the intent.'
+                  }),
+                ]
               }
             ]
           }
@@ -167,14 +201,26 @@
             name: 'site',
             fields: [
               {
-                name: 'hubNameFull',
+                name: 'time_zone',
+                label: 'Time Zone',
+                widget: 'select',
+                options: [
+                  { label: 'Eastern', value: 'America/New_York' },
+                  { label: 'Central', value: 'America/Chicago' },
+                  { label: 'Mountain', value: 'America/Denver' },
+                  { label: 'Pacific', value: 'America/Los_Angeles' },
+                  { label: 'Hawaii', value: 'America/Honolulu' },
+                ],
+              },
+              {
+                name: 'hub_name_full',
                 label: 'Full Hub Name',
                 widget: 'string',
                 hint: 'The full name of the hub. If you are the hub for Anytown, PA, you would fill this in with "Anytown, PA".',
                 required: true,
               },
               {
-                name: 'hubNameShort',
+                name: 'hub_name_short',
                 label: 'Short Hub Name',
                 widget: 'string',
                 hint: 'An abbreviated hub name. If you are the hub for Anytown, PA, you might fill this in with "Anytown".',

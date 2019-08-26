@@ -1,4 +1,5 @@
 {
-  "hubNameFull": "Anytown, PA",
-  "hubNameShort": "Anytown"
+  "hub_name_full": "Anytown, PA",
+  "hub_name_short": "Anytown",
+  "time_zone": "America/Los_Angeles"
 }

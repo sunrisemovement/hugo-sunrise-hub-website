@@ -4,8 +4,8 @@ body {
   margin: 0;
   box-sizing: border-box;
   font-family: Source Sans Pro;
-  color: var(--color-willow);
-  background-color: var(--color-charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -16,23 +16,81 @@ h1, h2, h3, h4, p {
   margin: 0;
 }
 
+strong {
+  font-weight: 600;
+}
+
 /* Variables */
 
 :root {
-  --color-charcoal: #33342E;
-  --color-yellow: #FFDE16;
-  --color-willow: #E3EDDF;
-  --shape-border-radius: 8px;
-  --elevation-overlay-opacity-01dp: 0.05;
-  --elevation-overlay-opacity-02dp: 0.07;
-  --elevation-overlay-color-01dp: rgba(255,255,255,0.05);
-  --elevation-overlay-color-02dp: rgba(255,255,255,0.07);
-  --elevation-overlay-color-04dp: rgba(255,255,255,0.09);
   --elevation-box-shadow-01dp: 0 1px 3px 0 rgba(0,0,0,0.20), 0 2px 1px -1px rgba(0,0,0,0.12), 0 1px 1px 0 rgba(0,0,0,0.14);
   --elevation-box-shadow-02dp: 0 1px 5px 0 rgba(0,0,0,0.20), 0 3px 1px -2px rgba(0,0,0,0.12), 0 2px 2px 0 rgba(0,0,0,0.14);
   --elevation-box-shadow-03dp: 0 1px 8px 0 rgba(0,0,0,0.20), 0 3px 3px -2px rgba(0,0,0,0.12), 0 3px 4px 0 rgba(0,0,0,0.14);
   --elevation-box-shadow-04dp: 0 2px 4px -1px rgba(0,0,0,0.20), 0 1px 10px 0 rgba(0,0,0,0.12), 0 4px 5px 0 rgba(0,0,0,0.14);
-  --state-overlay-color-hover: rgba(255,255,255,0.04);
-  --state-overlay-color-selected: rgba(255,255,255,0.12);
-  --state-border-color-selected: #fff;
+  --color-white-87pct: rgba(255,255,255,0.87);
+}
+
+.Text-H3-OnPrimary-HighEmphasis {
+  font-weight: 900;
+  font-size: 60px;
+  color: var(--color-white-87pct);
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.Text-H4-OnSurface-HighEmphasis {
+  font-weight: 900;
+  font-size: 34px;
+  color: rgba(0,0,0,0.87);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.Text-H6-OnSurface-HighEmphasis {
+  font-weight: 600;
+  font-size: 20px;
+  color: rgba(0,0,0,0.87);
+  letter-spacing: 0.15px;
+}
+
+.Text-H6-OnOverlay-HighEmphasis {
+  font-weight: 600;
+  font-size: 20px;
+  color: rgba(255,255,255,0.87);
+  letter-spacing: 0.15px;
+}
+
+.Text-Subtitle1-OnSurface-MediumEmphasis {
+  font-size: 16px;
+  letter-spacing: 0.15px;
+  color: rgba(0,0,0,0.6);
+}
+
+.Text-Body1-OnSurface-HighEmphasis {
+  font-size: 16px;
+  color: rgba(0,0,0,0.87);
+  letter-spacing: 0.5px;
+}
+
+.Text-Body2-OnSurface-MediumEmphasis {
+  font-size: 14px;
+  color: rgba(0,0,0,0.60);
+  letter-spacing: 0.25px;
+}
+
+.Text-Overline-OnSurface-MediumEmphasis {
+  font-size: 10px;
+  color: rgba(0,0,0,0.60);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.Icon-OnOverlay-HighEmphasis {
+  font-family: Material Icons;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 24px;
+  width: 24px;
+  color: rgba(255,255,255,0.87);
 }

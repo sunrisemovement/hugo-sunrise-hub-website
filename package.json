@@ -23,6 +23,7 @@
     "cors": "2.8.5",
     "domready": "1.0.8",
     "express": "4.17.1",
+    "jq": "1.7.2",
     "lit-element": "2.2.0",
     "lit-html": "1.1.0",
     "netlify-cms-backend-fs": "0.4.4",

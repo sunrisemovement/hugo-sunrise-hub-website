@@ -27,6 +27,8 @@ export default class Icon extends LitElement {
     :host {
       display: inline-block;
       font-family: Material Icons;
+      font-size: 24px;
+      line-height: 24px;
     }
   `
 }

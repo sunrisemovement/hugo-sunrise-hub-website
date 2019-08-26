@@ -1,83 +1,158 @@
 {{ define "styles" }}
-  {{ $homeCss := resources.Get "Home.css" | resources.Minify | resources.Fingerprint }}
-  <link rel="stylesheet" href="{{ $homeCss.Permalink }}" />
+  {{ $inputs := slice (resources.Get "Home.css") (resources.Get "Components/Card.css") (resources.Get "Components/TextButton.css") }}
+  {{ $styles := $inputs | resources.Concat "css/home.css" | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $styles.Permalink }}" />
 {{ end }}
 
 {{ define "scripts" }}
   <script>
     window._data = window._data || {}
     window._data.events = {{ $.Site.Data.actionnetwork.events }}
-    window._data.hubName = {{ $.Site.Data.settings.site.hubNameShort }}
+    window._data.hubName = {{ $.Site.Data.settings.site.hub_name_short }}
+    window._data.timezone = {{ $.Site.Data.settings.site.time_zone }}
   </script>
   <script src="{{ index $.Site.Data.theme.private.assets "home.js" | relURL }}" async></script>
 {{ end }}
 
 {{ define "main" }}
-  <section
-    class="top"
-    id="top">
-    {{ with .Params.top.image }}
+  <section class="Home-Top">
+    <img
+      class="Home-Top-Image"
+      src="{{ .Params.top.image.src }}"
+      alt="{{ .Params.top.image.alt }}"
+      style="object-position: {{ lower .Params.top.image.position_x }} {{ lower .Params.top.image.position_y }};"
+      />
+    <div class="Home-Top-Content">
       <img
-        class="top-background"
-        src="{{ .image | relURL }}"
-        style="object-position: {{ lower .position_x }} {{ lower .position_y }};"
-        alt="{{ .alt }}" />
-    {{ end }}
-    <div class="top-intro">
-      <img class="top-logo" src="{{ "/sunrise-hub-website/logo.svg" | relURL }}" />
-      <h1 class="top-hub-name"> We Are Sunrise {{ $.Site.Data.settings.site.hubNameShort }}</h1>
+        class="Home-Top-Content-Logo"
+        src="{{ relURL "/sunrise-hub-website/logo.svg" }}" />
+      <h1 class="Text-H3-OnPrimary-HighEmphasis">
+        We Are Sunrise {{ $.Site.Data.settings.site.hub_name_short }}
+      </h1>
     </div>
   </section>
-  <section
-    id="about"
-    class="about shared-main-section"
-    >
-    <h2 class="shared-section-header">About</h2>
-    <div class="about-details">
-      <div class="about-details-content">
-        {{ .Params.about.details | markdownify }}
-      </div>
+  <section class="Home-About">
+    <h2 class="Home-Shared-SectionHeader Text-H4-OnSurface-HighEmphasis">About</h2>
+    <div>
+      {{ range (split .Params.about.details "\n\n") }}
+        <p class="Text-Body1-OnSurface-HighEmphasis Home-About-Paragraph">
+          {{ . }}
+        </p>
+      {{ end}}
     </div>
   </section>
-  {{ $newsPages := where .Site.RegularPages "Section" "==" "news" }}
-  {{ $newsCount := len $newsPages }}
-  {{ $newsLatest := index $newsPages 0 }}
-  {{ $newsOldest := index $newsPages (sub $newsCount 1) }}
-  {{ if (gt $newsCount 0) }}
-    <section
-      id="news"
-      class="news shared-main-section">
-      <h2 class="shared-section-header">News</h2>
-      <div class="news-container">
-        <div class="news-latest shared-card">
-          <div class="news-latest-inner shared-card-inner">
-            <div class="news-latest-image" style="--image:url('{{ $newsLatest.Params.image | relURL }}')"></div>
-            <div class="news-latest-info">
-              <h3 class="news-latest-title">{{ $newsLatest.Params.title }}</h3>
-              <p class="news-latest-preview">
-                {{ $newsLatest.Params.content | truncate 200 }}
-              </p>
-              <div class="news-latest-actions">
-                <
-              </div>
+
+  {{ $allNews := where .Site.Pages "Section" "news" }}
+  {{ $earliestNews := index (sort $allNews "Params.publish_date" "asc" ) 0 }}
+  {{ $latestNews := index (sort $allNews "Params.publish_date" "desc") 0 }}
+  {{ $newsCount := len $allNews }}
+  {{ with $latestNews }}
+    <section class="Home-Shared-Section Home-News">
+      <h2 class="Home-Shared-SectionHeader Text-H4-OnSurface-HighEmphasis">News</h2>
+      <div class="Home-News-Layout">
+        <article class="Components-Card Home-News-Latest">
+          <img
+            class="Home-News-Latest-FeaturedImage"
+            src="{{ .Params.featured_image.src }}"
+            alt="{{ .Params.featured_image.alt }}"
+            style="object-position: {{ lower .Params.featured_image.position_x }} {{ lower .Params.featured_image.position_y }};"
+            />
+          <div class="Home-News-Latest-Content">
+            <time
+              class="Text-Overline-OnSurface-MediumEmphasis Home-News-Latest-Date"
+              datetime="{{ .Params.publish_date }}">
+              {{ dateFormat "January 2, 2006" .Params.publish_date }}
+            </time>
+            <h3 class="Text-H6-OnSurface-HighEmphasis Home-News-Latest-Title">
+              {{ .Params.title }}
+            </h3>
+            <p class="Text-Body2-OnSurface-MediumEmphasis">
+              {{ .Params.lead }}
+            </p>
+            <div class="Home-News-Latest-Actions">
+              <a class="Components-TextButton">
+                Read More
+              </a>
             </div>
           </div>
-        </div>
-        <div class="news-summary">
-          Sunrise
-          {{ $.Site.Data.settings.site.hubNameShort }}
-          has published
-          <strong>{{ $newsCount }}</strong>
-          {{ if (eq $newsCount 1) }}
-            story
-          {{ else }}
-            stories
-          {{ end }}
-          since
-          <strong>{{ $newsOldest.PublishDate.Format "January 2006" }}</strong>
+        </article>
+        <div class="Components-Card Home-News-SeeAll">
+          <p class="Text-Body1-OnSurface-HighEmphasis Home-News-Summary">
+            Sunrise {{ $.Site.Data.settings.site.hub_name_short }} has published <strong>{{ $newsCount }}</strong>
+            {{ if eq $newsCount 1 }} story {{ else }} stories {{ end }} since
+            <strong>{{ dateFormat "January 2006" $earliestNews.Params.publish_date }}</strong>
+          </p>
+          <a class="Components-TextButton">
+            See All News
+          </a>
         </div>
       </div>
     </section>
   {{ end }}
-  {{ partial "home/events.html" . }}
+
+  {{ if gt (len $.Site.Data.actionnetwork.events) 0 }}
+  <section class="Home-Shared-Section">
+    <h2 class="Home-Shared-SectionHeader Text-H4-OnSurface-HighEmphasis">Events</h2>
+    <sunrise-events></sunrise-events>
+  </section>
+  {{ end }}
+
+  {{ if gt (len .Params.tools) 0 }}
+  <section class="Home-Shared-Section">
+    <h2 class="Home-Shared-SectionHeader Text-H4-OnSurface-HighEmphasis">Tools</h2>
+    <div class="Home-Tools-Layout">
+      {{ range .Params.tools }}
+        <a
+          class="Components-Card Home-Tools-Tool"
+          title="{{ .label }}"
+          href="{{ .url }}">
+          <img
+            class="Home-Tools-Background"
+            src="{{ .image.src }}"
+            alt="{{ .image.alt }}"
+            style="object-position: {{ lower .image.position_x }} {{ lower .image.position_y }};"
+            />
+          <div class="Home-Tools-Content">
+            <span class="Text-H6-OnOverlay-HighEmphasis">{{ .label }}</span>
+            <span class="Icon-OnOverlay-HighEmphasis material-icons">launch</span>
+          </div>
+        </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  <section class="Home-Shared-Section">
+    <h2 class="Home-Shared-SectionHeader Text-H4-OnSurface-HighEmphasis">Follow</h2>
+    <p class="Text-Subtitle1-OnSurface-MediumEmphasis">
+      Follow Sunrise {{ $.Site.Data.settings.site.hub_name_short }} on social media to stay up-to-date with the latest news and actions from our members.
+    </p>
+    <div class="Home-Follow-Links">
+      <a class="Components-TextButton">
+        <svg
+          class="Components-TextButton-Icon"
+          viewBox="0 0 512 512">
+          <path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6-18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6.8 15 2.5 22.1-80.5-4-151.9-42.6-199.6-101.3-8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7-16-.4-31-4.8-44-12.1v1.2c0 47 33.4 86.1 77.7 95-8.1 2.2-16.7 3.4-25.5 3.4-6.2 0-12.3-.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3-33.1 26-74.9 41.5-120.3 41.5-7.8 0-15.5-.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-.1-8.4-.3-12.5C462.6 146 479 129 492 109.5z"/>
+        </svg>
+        <span>Twitter</span>
+      </a>
+      <a class="Components-TextButton">
+        <svg
+          class="Components-TextButton-Icon"
+          viewBox="0 0 512 512">
+          <path d="M336 96c21.2 0 41.3 8.4 56.5 23.5S416 154.8 416 176v160c0 21.2-8.4 41.3-23.5 56.5S357.2 416 336 416H176c-21.2 0-41.3-8.4-56.5-23.5S96 357.2 96 336V176c0-21.2 8.4-41.3 23.5-56.5S154.8 96 176 96h160m0-32H176c-61.6 0-112 50.4-112 112v160c0 61.6 50.4 112 112 112h160c61.6 0 112-50.4 112-112V176c0-61.6-50.4-112-112-112z"/>
+          <path d="M360 176c-13.3 0-24-10.7-24-24s10.7-24 24-24c13.2 0 24 10.7 24 24s-10.8 24-24 24zM256 192c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64m0-32c-53 0-96 43-96 96s43 96 96 96 96-43 96-96-43-96-96-96z"/>
+        </svg>
+        <span>Instagram</span>
+      </a>
+      <a class="Components-TextButton">
+        <svg
+          class="Components-TextButton-Icon"
+          viewBox="0 0 512 512">
+          <path d="M426.8 64H85.2C73.5 64 64 73.5 64 85.2v341.6c0 11.7 9.5 21.2 21.2 21.2H256V296h-45.9v-56H256v-41.4c0-49.6 34.4-76.6 78.7-76.6 21.2 0 44 1.6 49.3 2.3v51.8h-35.3c-24.1 0-28.7 11.4-28.7 28.2V240h57.4l-7.5 56H320v152h106.8c11.7 0 21.2-9.5 21.2-21.2V85.2c0-11.7-9.5-21.2-21.2-21.2z"/>
+        </svg>
+        <span>Facebook</span>
+      </a>
+    </div>
+  </section>
 {{ end }}

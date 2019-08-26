@@ -1,0 +1,9 @@
+<a
+  href="{{ .href }}"
+  {{ if .new_window }} target="_blank" {{ end }}
+  class="Components-TextButton">
+  {{ if .icon }}
+    <span class="Icon-OnSurface">{{ .icon }}</span>
+  {{ end }}
+  <span>{{ .label }}</span>
+</a>

@@ -2,7 +2,6 @@
 <html class="nojs">
 <head>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width" />
-  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,900|Material+Icons&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ (resources.Get "base.css").Permalink }}" />
   {{- block "styles" . }}{{- end }}
   <script>
@@ -12,10 +11,6 @@
       .replace(window.location.protocol, '')
       .replace('//', '')
       .replace(window.location.host, '')
-    window._data.serviceWorkerUrl = {{ index $.Site.Data.theme.private.assets "service-worker.js" | relURL }}
-    if (navigator.serviceWorker) {
-      navigator.serviceWorker.register(window._data.serviceWorkerUrl, { scope: window._data.basePath })
-    }
   </script>
   {{- block "scripts" . }}{{- end }}
 </head>

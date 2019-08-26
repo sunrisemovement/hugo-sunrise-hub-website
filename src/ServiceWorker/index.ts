@@ -20,6 +20,7 @@ const shouldCacheForeverAfterFirstLoad = (event: FetchEvent): boolean => {
   //   || (event.request.url.endsWith('.js') && event.request.method === 'GET')
   //   || (event.request.url.endsWith('.css') && event.request.method === 'GET')
     || (event.request.url.startsWith('https://maps.wikimedia.org') && event.request.method === 'GET')
+    || (event.request.url.startsWith('https://unpkg.com') && event.request.method === 'GET')
 }
 
 const alwaysFetch = (event: FetchEvent) => {

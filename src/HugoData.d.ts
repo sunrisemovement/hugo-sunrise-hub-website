@@ -6,6 +6,7 @@ declare global {
     hubName: string,
     serviceWorkerUrl: string,
     basePath: string,
+    timezone: string,
   }
 
   interface Window {

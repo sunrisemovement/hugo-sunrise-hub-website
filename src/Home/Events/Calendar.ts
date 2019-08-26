@@ -1,11 +1,63 @@
 import { LitElement, html, css, TemplateResult, CSSResult, property, customElement } from 'lit-element'
 import { classMap } from 'lit-html/directives/class-map'
-import DayOfYear from './DayOfYear'
-import MonthOfYear from './MonthOfYear'
-import DayRange from './DayRange'
 import Event from './Event'
+import { CivilYearMonth, Duration, CivilDate, CivilDateTime } from '../../Temporal'
+import * as TemporalUtils from './TemporalUtils'
 
-const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+class MonthRange {
+  constructor(
+    private month: CivilYearMonth
+  ) {}
+
+  *[Symbol.iterator]() {
+    const firstOfMonth = this.month.withDay(1)
+    const lastOfMonth = this.month.plus({ months: 1 }).withDay(1).minus({ days: 1 })
+    const startingSaturday = firstOfMonth.minus({ days: firstOfMonth.dayOfWeek })
+    const endingSunday = lastOfMonth.plus({ days: 7 - lastOfMonth.dayOfWeek })
+    let current = startingSaturday
+    while (
+      current.year !== endingSunday.year
+      || current.month !== endingSunday.month
+      || current.day !== endingSunday.day
+    ) {
+      yield current
+      current = current.plus({ days: 1 })
+    }
+  }
+}
+
+const thisMonth = () => {
+  const now = new Date()
+  return new CivilYearMonth(
+    now.getFullYear(),
+    now.getMonth() + 1,
+  )
+}
+
+const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+
+const formatMonthForSwitcher = (month: CivilYearMonth) => {
+  const date = new Date(month.year, month.month - 1)
+  const formatter = new Intl.DateTimeFormat('en-iso', {
+    year: 'numeric',
+    month: 'long'
+  })
+  return formatter.format(date)
+}
+
+const formatDateForHeader = (date: CivilDate) => {
+  const d = new Date(date.year, date.month -1, date.day)
+  const formatter = new Intl.DateTimeFormat('en-iso', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+  return formatter.format(d)
+}
+
+const monthContains = (month: CivilYearMonth, date: CivilDate) => {
+  return month.year === date.year && month.month === date.month
+}
 
 @customElement('sunrise-events-calendar')
 export default class Calendar extends LitElement {
@@ -24,10 +76,11 @@ export default class Calendar extends LitElement {
   public selected: Event | null = null
 
   @property({ attribute: false })
-  private month = MonthOfYear.now()
+  private month = thisMonth()
 
-  private onDayClick(day: DayOfYear) {
-    const label = day.toString('iso8601')
+  private onDayClick(day: CivilDate) {
+    this.month = day.getCivilYearMonth()
+    const label = day.toString()
     const element = this.renderRoot.querySelector(`[data-day="${label}"]`)
     if (!element) return
     element.scrollIntoView({
@@ -38,16 +91,16 @@ export default class Calendar extends LitElement {
   }
 
   private onNextMonthClick() {
-    this.month = this.month.add(1)
+    this.month = this.month.plus({ months: 1 })
   }
 
   private onPreviousMonthClick() {
-    this.month = this.month.add(-1)
+    this.month = this.month.minus({ months: 1 })
   }
 
   private eventsByDay(events: Array<Event>): Array<Array<Event>> {
     const map = events.reduce((memo, next) => {
-      const key = next.date.toString('iso8601')
+      const key = next.start.getCivilDate().toString()
       const array = memo.has(key) ? memo.get(key) : []
       array.push(next)
       memo.set(key, array)
@@ -56,7 +109,13 @@ export default class Calendar extends LitElement {
     return Array
       .from(map.entries())
       .map(([k, v]) => v)
-      .sort((l, r) => l[0].date.compare(r[0].date))
+      .sort((l: Array<Event>, r: Array<Event>) => {
+        const left = l[0].start.getCivilDate().toString()
+        const right = r[0].start.getCivilDate().toString()
+        if (left > right) return 1
+        else if (left < right) return -1
+        else return 0
+      })
   }
 
   private onEventClick(event: Event) {
@@ -65,87 +124,93 @@ export default class Calendar extends LitElement {
   }
 
   protected render() {
-    const eventDays = new Set(this.events.map(e => e.date.toString('iso8601')))
+    const eventDays = new Set(this.events.map(e => e.start.getCivilDate().toString()))
 
-    /**
-     * @type Array<DayOfYear>
-     */
-    const days = Array.from(new DayRange(
-      this.month.firstDay().nearestPreviousSunday(),
-      this.month.lastDay().nearestNextSaturday()
-    ))
+    const days = Array.from(new MonthRange(this.month))
 
     return html`
-      <div class="outer-card">
-        <div class="inner-card">
-          <div class="calendar">
-            <div class="calendar-switcher">
-              <button
-                class="calendar-switcher-button"
-                @click=${() => this.onPreviousMonthClick()}>
-                <span class="icon">chevron_left</span>
-              </button>
-              <div>${this.month.formatForSwitcher()}</div>
-              <button
-                class="calendar-switcher-button"
-                @click=${() => this.onNextMonthClick()}>
-                <span class="icon">chevron_right</span>
-              </button>
-            </div>
-            <div class="calendar-grid">
-              ${weekdays.map(w => html`<div class="calendar-grid-weekday">${w}</div>`)}
-              ${days.map(d => {
-                const hasEvent = eventDays.has(d.toString('iso8601'))
-                const outOfMonth = !this.month.contains(d)
+      <div class="card">
+        <div class="calendar">
+          <div class="calendar-switcher">
+            <button
+              class="calendar-switcher-button"
+              @click=${() => this.onPreviousMonthClick()}>
+              <sunrise-events-icon
+                class="button-icon"
+                .icon=${'chevron_left'}>
+              </sunrise-events-icon>
+            </button>
+            <div>${formatMonthForSwitcher(this.month)}</div>
+            <button
+              class="calendar-switcher-button"
+              @click=${() => this.onNextMonthClick()}>
+              <sunrise-events-icon
+                class="button-icon"
+                .icon=${'chevron_right'}>
+              </sunrise-events-icon>
+            </button>
+          </div>
+          <div class="calendar-grid">
+            ${weekdays.map(w => html`<div class="calendar-grid-weekday">${w}</div>`)}
+            ${days.map(d => {
+              const hasEvent = eventDays.has(d.toString())
+              const outOfMonth = !monthContains(this.month, d)
 
-                if (hasEvent) {
-                  return html`
-                    <button
-                      class="calendar-grid-day has-event ${outOfMonth ? 'out-of-month' : ''}"
-                      @click=${() => this.onDayClick(d)}>
-                      <span class="calendar-grid-number has-event">${d.day}</span>
-                      <span class="calendar-grid-event-marker"></span>
-                    </button>
-                  `
-                }
-
+              if (hasEvent) {
                 return html`
-                  <div class="calendar-grid-day ${outOfMonth ? 'out-of-month' : ''}">
-                    <span class="calendar-grid-number">${d.day}</span>
+                  <button
+                    class="calendar-grid-day has-event ${outOfMonth ? 'out-of-month' : ''}"
+                    @click=${() => this.onDayClick(d)}>
+                    <span class="calendar-grid-number has-event">${d.day}</span>
+                    <span class="calendar-grid-event-marker"></span>
+                  </button>
+                `
+              }
+
+              return html`
+                <div class="calendar-grid-day ${outOfMonth ? 'out-of-month' : ''}">
+                  <span class="calendar-grid-number">${d.day}</span>
+                </div>
+              `
+            })}
+          </div>
+        </div>
+        ${this.events.length ?
+          html`
+            <div class="events" data-events-scroll>
+              ${this.eventsByDay(this.events).map((events) => {
+                return html`
+                  <div class="events-day-group" data-day="${events[0].start.getCivilDate().toString()}">
+                    <div class="events-day-heading">${formatDateForHeader(events[0].start.getCivilDate())}</div>
+                    <div class="events-inner-list">
+                      ${events.map(e => {
+                        return html`
+                          <div
+                            class=${classMap({ 'events-event': true, selected: this.selected === e })}
+                            @click=${() => this.onEventClick(e)}>
+                            <time
+                              datetime=${e.start.getCivilDate().toString()}
+                              class="events-event-title">
+                              ${e.title}
+                            </time>
+                            <time
+                              datetime=${e.start.getCivilTime().toString()}
+                              class="events-event-time">
+                              ${TemporalUtils.fullTimeString(e.start)}
+                            </time>
+                            <div class="events-event-place">${e.place}</div>
+                            <div class="events-event-address">${e.address}</div>
+                          </div>
+                        `
+                      })}
+                    </div>
                   </div>
                 `
               })}
             </div>
-          </div>
-          ${this.events.length ?
-            html`
-              <div class="events" data-events-scroll>
-                ${this.eventsByDay(this.events).map((events) => {
-                  return html`
-                    <div class="events-day-group" data-day="${events[0].date.toString('iso8601')}">
-                      <div class="events-day-heading">${events[0].date.toString('full')}</div>
-                      <div class="events-inner-list">
-                        ${events.map(e => {
-                          return html`
-                            <div
-                              class=${classMap({ 'events-event': true, selected: this.selected === e })}
-                              @click=${() => this.onEventClick(e)}>
-                              <div class="events-event-title">${e.title}</div>
-                              <div class="events-event-time">${e.time.toString('full')}</div>
-                              <div class="events-event-place">${e.place}</div>
-                              <div class="events-event-address">${e.address}</div>
-                            </div>
-                          `
-                        })}
-                      </div>
-                    </div>
-                  `
-                })}
-              </div>
-            ` :
-            html``
-          }
-        </div>
+          ` :
+          html``
+        }
       </div>
     `
   }
@@ -155,41 +220,28 @@ export default class Calendar extends LitElement {
       display: block;
       min-height: 0;
       position: relative;
+      height: 100%;
+      width: 100%;
     }
     * {
       box-shadow: border-box;
     }
-    .outer-card {
-      background-color: var(--color-charcoal);
-      border-radius: var(--shape-border-radius);
-      box-shadow: var(--elevation-box-shadow-01dp);
-      position: relative;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-    .outer-card::after {
-      position: absolute;
-      z-index: 0;
-      content: '';
-      left: 0; right: 0; top: 0; bottom: 0;
-      background-color: #fff;
-      opacity: var(--elevation-overlay-opacity-01dp);
-      border-radius: var(--shape-border-radius);
-    }
-
-    .inner-card {
+    .card {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0px, auto);
       grid-auto-flow: row;
+      border-radius: var(--shape-border-radius);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.12);
+      min-height: 0;
       height: 100%;
+      width: 100%;
     }
 
     .calendar {
-      background-color: var(--elevation-overlay-color-04dp);
-      box-shadow: var(--elevation-box-shadow-03dp);
       z-index: 1;
       position: relative;
     }
@@ -199,7 +251,6 @@ export default class Calendar extends LitElement {
       grid-template-columns: auto 1fr auto;
       grid-auto-flow: column;
       place-items: center;
-      padding: 8px;
     }
 
     .calendar-switcher-button {
@@ -207,49 +258,39 @@ export default class Calendar extends LitElement {
       border: 0;
       outline: 0;
       padding: 4px;
-      color: var(--color-willow);
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       cursor: pointer;
       font-size: 32px;
+      border-radius: 50%;
     }
-      .calendar-switcher-button::before {
-        position: absolute;
-        content: '';
-        background-color: var(--color-willow);
-        opacity: 0;
-        border-radius: 50%;
-        left: 0; right: 0; top: 0; bottom: 0;
-        pointer-events: none;
+      .calendar-switcher-button:hover {
+        background-color: rgba(0,0,0,0.04);
       }
-      .calendar-switcher-button:hover::before {
-        opacity: 0.04;
-      }
-      .calendar-switcher-button:active::before {
-        opacity: 0.08;
+      .calendar-switcher-button:active {
+        background-color: rgba(0,0,0,0.12);
       }
 
     .calendar-grid {
       display: grid;
-      grid-template-columns: repeat(7, auto);
+      grid-template-columns: repeat(7, 36px);
+      grid-template-rows: repeat(auto-fill, 36px);
       grid-auto-flow: dense;
       place-items: center;
-      padding: 8px;
+      grid-column-gap: 4px;
+      grid-row-gap: 4px;
+      place-content: center;
     }
 
-    .calendar-grid-weekday {
-      padding: 8px 0;
-    }
-
-    .calendar-grid-day {
+    .calendar-grid-weekday, .calendar-grid-day {
       line-height: 1;
-      font-size: 20px;
-      width: 48px;
-      height: 48px;
+      font-size: 16px;
+      width: 36px;
+      height: 36px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -268,9 +309,12 @@ export default class Calendar extends LitElement {
         cursor: pointer;
       }
       .calendar-grid-day.has-event:hover {
-        opacity: 1;
-        background-color: var(--state-overlay-color-hover);
+        background-color: rgba(0,0,0,0.04);
       }
+    
+    .calendar-grid-weekday {
+      color: rgba(0,0,0,0.6);
+    }
 
     .calendar-grid-number {
       margin-bottom: 10px;
@@ -285,7 +329,7 @@ export default class Calendar extends LitElement {
       height: 6px;
       display: block;
       border-radius: 50%;
-      background-color: var(--color-yellow);
+      background-color: rgba(0,0,0,0.87);
     }
 
     .icon {
@@ -311,7 +355,6 @@ export default class Calendar extends LitElement {
       border-bottom-right-radius: var(--shape-border-radius);
       min-height: 0;
       position: relative;
-      padding-bottom: 24px;
     }
 
     .events-day-group {
@@ -321,49 +364,70 @@ export default class Calendar extends LitElement {
       position: -webkit-sticky;
       position: sticky;
       top: 0;
-      background-color: var(--color-charcoal);
       padding: 16px;
-      text-transform: uppercase;
-      font-weight: 900;
-    }
-      .events-day-heading::before {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        content: '';
-        background-color: var(--elevation-overlay-color-01dp);
-      }
-    .events-inner-list {
-      padding: 0 16px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.1px;
+      background-color: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
     }
     .events-event {
       padding: 16px;
-      box-shadow: var(--elevation-box-shadow-01dp);
-      border-radius: var(--shape-border-radius);
-      background-color: var(--elevation-overlay-color-02dp);
-      margin-bottom: 16px;
       cursor: pointer;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-column-gap: 8px;
+      grid-template-rows: auto auto auto;
     }
-      .events-event:last-child {
-        margin-bottom: 0;
-      }
       .events-event.selected {
-        background-color: var(--state-overlay-color-selected);
-        border: 2px solid var(--state-border-color-selected);
-        padding: 14px;
+        background-color: rgba(0,0,0,0.12);
       }
     .events-event-title {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.15px;
+      grid-row: 1;
+      grid-column: 1;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .events-event-time {
-      margin-bottom: 8px;
+      grid-row: 1;
+      grid-column: 2;
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      color: rgba(0,0,0,0.6);
+      align-self: center;
     }
     .events-event-place {
-      padding-left: 4px;
-      font-size: 18px;
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      letter-spacing: 0.25px;
+      grid-column: 1 / 2;
+      grid-row: 2;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .events-event-address {
-      padding-left: 4px;
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      letter-spacing: 0.25px;
+      grid-column: 1 / 2;
+      grid-row: 3;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .button-icon {
+      width: 24px;
+      height: 24px;
+      color: rgba(0,0,0,0.6);
     }
   `
 }

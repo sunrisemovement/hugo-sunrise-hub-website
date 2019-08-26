@@ -1,5 +1,4 @@
-import DayOfYear from './DayOfYear'
-import TimeOfDay from './TimeOfDay'
+import { CivilDateTime, ZonedDateTime, OffsetDateTime, Instant } from '../../Temporal'
 
 const MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24
 
@@ -18,8 +17,7 @@ export type Options = {
 
 export default class Event {
   public readonly title: string
-  public readonly date: DayOfYear
-  public readonly time: TimeOfDay
+  public readonly start: CivilDateTime
   public readonly place: string
   public readonly address: string
   public readonly url: string
@@ -41,13 +39,6 @@ export default class Event {
     this.coordinate = coordinates
     this.url = url
     this.description = description
-    
-    const startDate = new Date(start)
-    this.time = new TimeOfDay(startDate.valueOf() % MILLIS_IN_A_DAY)
-    this.date = new DayOfYear(
-      startDate.getFullYear(),
-      startDate.getMonth(),
-      startDate.getDate()
-    )
+    this.start = Instant.fromString(start).withOffset('+00:00').getCivilDateTime()
   }
 }

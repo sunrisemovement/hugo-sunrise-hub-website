@@ -155,6 +155,7 @@
   grid-auto-flow: column;
   grid-column-gap: 4px;
   margin-top: 8px;
+  margin-bottom: 16px;
 }
 
 .Home-Follow-Timelines {

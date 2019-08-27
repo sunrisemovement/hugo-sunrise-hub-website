@@ -3347,6 +3347,81 @@ const svg = (strings, ...values) => new _lib_template_result_js__WEBPACK_IMPORTE
 
 /***/ }),
 
+/***/ "./src/Components/TwitterTimeline.ts":
+/*!*******************************************!*\
+  !*** ./src/Components/TwitterTimeline.ts ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var lit_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lit-element */ "./node_modules/lit-element/lit-element.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+let TwitterTimeline = class TwitterTimeline extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitElement"] {
+    constructor() {
+        super();
+        this.container = document.createElement('div');
+        this.screenName = '';
+        this.ensureTwitterApi = () => {
+            if (document.getElementById('twitter-wjs'))
+                return;
+            window.twttr = window.twttr || {};
+            window.twttr._e = [];
+            window.twttr.ready = (f) => window.twttr._e.push(f);
+            const script = document.createElement('script');
+            script.id = 'twitter-wjs';
+            script.src = 'https://platform.twitter.com/widgets.js';
+            document.head.appendChild(script);
+        };
+        this.ensureTwitterApi();
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        window.twttr.ready(async () => {
+            await window.twttr.widgets.createTimeline({
+                sourceType: 'profile',
+                screenName: this.screenName,
+            }, this.container, {
+                width: '392',
+                height: '456',
+            });
+        });
+    }
+    render() {
+        return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `${this.container}`;
+    }
+};
+TwitterTimeline.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
+    :host {
+      display: block;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+  `;
+__decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: 'screenname' }),
+    __metadata("design:type", String)
+], TwitterTimeline.prototype, "screenName", void 0);
+TwitterTimeline = __decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["customElement"])('sunrise-twitter-timeline'),
+    __metadata("design:paramtypes", [])
+], TwitterTimeline);
+/* harmony default export */ __webpack_exports__["default"] = (TwitterTimeline);
+
+
+/***/ }),
+
 /***/ "./src/Components/VisibilityTracker.ts":
 /*!*********************************************!*\
   !*** ./src/Components/VisibilityTracker.ts ***!
@@ -3645,15 +3720,15 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       width: 100%;
     }
     * {
-      box-shadow: border-box;
+      box-sizing: border-box;
     }
     .card {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-rows: auto minmax(0px, auto);
+      grid-template-rows: auto 1fr;
       grid-auto-flow: row;
-      border-radius: var(--shape-border-radius);
+      border-radius: 4px;
       position: relative;
       overflow: hidden;
       border: 1px solid rgba(0,0,0,0.12);
@@ -3937,14 +4012,17 @@ let Details = class Details extends lit_element__WEBPACK_IMPORTED_MODULE_0__["Li
             <time class="time">
               ${_TemporalUtils__WEBPACK_IMPORTED_MODULE_5__["fullDateString"](this.selected.start)} • ${_TemporalUtils__WEBPACK_IMPORTED_MODULE_5__["fullTimeString"](this.selected.start)}
             </time>
-            <div class="location">
+            <a
+              class="location"
+              target="_blank"
+              href="https://www.google.com/maps/place/${encodeURIComponent(this.selected.address)}">
               <sunrise-events-icon
                 class="location-icon"
                 .icon=${'place'}>
               </sunrise-events-icon>
               <p class="location-name">${this.selected.place}</p>
               <p class="location-address">${this.selected.address}</p>
-            </div>
+            </a>
             <div class="description-outer">
               <div
                 class=${Object(lit_html_directives_class_map__WEBPACK_IMPORTED_MODULE_2__["classMap"])({
@@ -3988,7 +4066,7 @@ let Details = class Details extends lit_element__WEBPACK_IMPORTED_MODULE_0__["Li
 Details.dependencies = [_Map__WEBPACK_IMPORTED_MODULE_3__["default"], _Icon__WEBPACK_IMPORTED_MODULE_4__["default"], _Components_VisibilityTracker__WEBPACK_IMPORTED_MODULE_6__["default"]];
 Details.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
     :host {
-      border-radius: var(--shape-border-radius);
+      border-radius: 4px;
       overflow: hidden;
       position: relative;
       width: 100%;
@@ -4006,9 +4084,14 @@ Details.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       grid-template-columns: 24px auto;
       grid-column-gap: 16px;
       grid-row-gap: 4px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid rgba(0,0,0,0.12);
       margin-bottom: 16px;
+      padding: 8px;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 4px;
+    }
+    .location:hover {
+      background-color: rgba(0,0,0,0.04);
     }
     .location-icon {
       grid-row: 1 / span 2;
@@ -4078,6 +4161,8 @@ Details.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
     .description-outer {
       min-height: 0;
       position: relative;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      padding-top: 16px;
     }
     .description {
       overflow-y: auto;
@@ -4611,9 +4696,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var domready__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(domready__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Events_Event__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Events/Event */ "./src/Home/Events/Event.ts");
 /* harmony import */ var _Events_index__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Events/index */ "./src/Home/Events/index.ts");
+/* harmony import */ var _Components_TwitterTimeline__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Components/TwitterTimeline */ "./src/Components/TwitterTimeline.ts");
 
 
 
+
+/**
+ * This just makes sure typescript includes them in the bundle
+ */
+const dependencies = [
+    _Events_index__WEBPACK_IMPORTED_MODULE_2__["default"],
+    _Components_TwitterTimeline__WEBPACK_IMPORTED_MODULE_3__["default"],
+];
 domready__WEBPACK_IMPORTED_MODULE_0___default()(() => {
     const element = document.querySelector('sunrise-events');
     if (element instanceof _Events_index__WEBPACK_IMPORTED_MODULE_2__["default"]) {
@@ -6231,4 +6325,4 @@ __webpack_require__.r(__webpack_exports__);
 /***/ })
 
 /******/ });
-//# sourceMappingURL=home.579a853ec2190a78f8d7.js.map
+//# sourceMappingURL=home.304dca15938d2c30d275.js.map

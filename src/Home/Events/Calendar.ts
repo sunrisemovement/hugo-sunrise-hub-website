@@ -224,15 +224,15 @@ export default class Calendar extends LitElement {
       width: 100%;
     }
     * {
-      box-shadow: border-box;
+      box-sizing: border-box;
     }
     .card {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-rows: auto minmax(0px, auto);
+      grid-template-rows: auto 1fr;
       grid-auto-flow: row;
-      border-radius: var(--shape-border-radius);
+      border-radius: 4px;
       position: relative;
       overflow: hidden;
       border: 1px solid rgba(0,0,0,0.12);

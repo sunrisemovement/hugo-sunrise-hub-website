@@ -52,14 +52,17 @@ export default class Details extends LitElement {
             <time class="time">
               ${TemporalUtils.fullDateString(this.selected.start)} • ${TemporalUtils.fullTimeString(this.selected.start)}
             </time>
-            <div class="location">
+            <a
+              class="location"
+              target="_blank"
+              href="https://www.google.com/maps/place/${encodeURIComponent(this.selected.address)}">
               <sunrise-events-icon
                 class="location-icon"
                 .icon=${'place'}>
               </sunrise-events-icon>
               <p class="location-name">${this.selected.place}</p>
               <p class="location-address">${this.selected.address}</p>
-            </div>
+            </a>
             <div class="description-outer">
               <div
                 class=${classMap({
@@ -102,7 +105,7 @@ export default class Details extends LitElement {
 
   static styles = css`
     :host {
-      border-radius: var(--shape-border-radius);
+      border-radius: 4px;
       overflow: hidden;
       position: relative;
       width: 100%;
@@ -120,9 +123,14 @@ export default class Details extends LitElement {
       grid-template-columns: 24px auto;
       grid-column-gap: 16px;
       grid-row-gap: 4px;
-      padding-bottom: 24px;
-      border-bottom: 1px solid rgba(0,0,0,0.12);
       margin-bottom: 16px;
+      padding: 8px;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 4px;
+    }
+    .location:hover {
+      background-color: rgba(0,0,0,0.04);
     }
     .location-icon {
       grid-row: 1 / span 2;
@@ -192,6 +200,8 @@ export default class Details extends LitElement {
     .description-outer {
       min-height: 0;
       position: relative;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      padding-top: 16px;
     }
     .description {
       overflow-y: auto;

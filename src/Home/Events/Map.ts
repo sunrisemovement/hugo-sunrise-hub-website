@@ -142,7 +142,7 @@ export default class Map extends LitElement {
       width: 32px;
       height: 32px;
       font-family: Material Icons;
-      color: var(--color-yellow);
+      color: #121212;
       font-size: 32px;
       line-height: 1;
       text-shadow: 0 1px 6px rgba(0,0,0,0.4);

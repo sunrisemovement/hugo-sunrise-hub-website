@@ -4410,7 +4410,7 @@ Map.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       width: 32px;
       height: 32px;
       font-family: Material Icons;
-      color: var(--color-yellow);
+      color: #121212;
       font-size: 32px;
       line-height: 1;
       text-shadow: 0 1px 6px rgba(0,0,0,0.4);
@@ -6231,4 +6231,4 @@ __webpack_require__.r(__webpack_exports__);
 /***/ })
 
 /******/ });
-//# sourceMappingURL=home.fa3242d8c4d0c6d4cc91.js.map
+//# sourceMappingURL=home.579a853ec2190a78f8d7.js.map

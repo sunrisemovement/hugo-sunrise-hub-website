@@ -1,5 +1,5 @@
 {{ define "styles" }}
-  {{ $inputs := slice (resources.Get "Home.css") (resources.Get "Components/Card.css") (resources.Get "Components/TextButton.css") }}
+  {{ $inputs := slice (resources.Get "Home.css") (resources.Get "Components/Card.css") (resources.Get "Components/TextButton.css") (resources.Get "Components/Footer.css") }}
   {{ $styles := $inputs | resources.Concat "css/home.css" | resources.Minify | resources.Fingerprint }}
   <link rel="stylesheet" href="{{ $styles.Permalink }}" />
 {{ end }}
@@ -153,6 +153,9 @@
         </svg>
         <span>Facebook</span>
       </a>
+    </div>
+    <div class="Home-Follow-Timelines">
+      
     </div>
   </section>
 {{ end }}

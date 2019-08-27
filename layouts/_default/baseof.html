@@ -2,7 +2,8 @@
 <html class="nojs">
 <head>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,width=device-width" />
-  <link rel="stylesheet" href="{{ (resources.Get "base.css").Permalink }}" />
+  {{ $styles := slice (resources.Get "base.css") (resources.Get "Components/Footer.css") | resources.Concat "css/base.css" | resources.Minify | resources.Fingerprint }}
+  <link rel="stylesheet" href="{{ $styles.Permalink }}" />
   {{- block "styles" . }}{{- end }}
   <script>
     try { document.documentElement.classList.remove('nojs') } catch (e) {}
@@ -15,8 +16,39 @@
   {{- block "scripts" . }}{{- end }}
 </head>
 <body>
+  <header class="Components-Header">
+    <div>
+      
+    </div>
+  </header>
   <main>
     {{- block "main" . }}{{- end }}
   </main>
+  <footer class="Components-Footer">
+    <div class="Components-Footer-Line">
+      <a class="Components-TextButton Components-TextButton-OnOverlay">
+        Donate
+      </a>
+    </div>
+    <div class="Components-Footer-Line">
+      <a class="Components-TextButton Components-TextButton-OnOverlay">
+        Privacy
+      </a>
+      <a class="Components-TextButton Components-TextButton-OnOverlay">
+        Legal
+      </a>
+      <a class="Components-TextButton Components-TextButton-OnOverlay">
+        Contact
+      </a>
+    </div>
+    <div class="Components-Footer-Line">
+      <p class="Components-Footer-Copyright Text-Body2-OnOverlay">
+        Content © 2019 Sunrise Movement {{ $.Site.Data.settings.site.hub_name_full }}
+      </p>
+      <p class="Components-Footer-Copyright Text-Body2-OnOverlay">
+        Site Design © 2019 Sunrise Movement
+      </p>
+    </div>
+  </footer>
 </body>
 </html>

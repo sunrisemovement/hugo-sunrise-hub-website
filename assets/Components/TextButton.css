@@ -19,13 +19,26 @@
   display: inline-flex;
   align-items: center;
 }
+.Components-TextButton-OnOverlay {
+  color: rgba(255,255,255,0.6);
+}
+
 .Components-TextButton:hover {
   background-color: rgba(0,0,0,0.04);
   color: rgba(0,0,0,0.87);
 }
+.Components-TextButton.Components-TextButton-OnOverlay:hover {
+  background-color: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.87);
+}
+
 .Components-TextButton:active {
   background-color: rgba(0,0,0,0.12);
 }
+.Components-TextButton.Components-TextButton-OnOverlay:active {
+  background-color: rgba(255,255,255,0.12);
+}
+
 .Components-TextButton-Icon {
   width: 24px;
   height: 24px;

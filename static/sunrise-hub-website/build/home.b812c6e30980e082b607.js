@@ -1047,7 +1047,7 @@ UpdatingElement.finalized = true;
 /*!*************************************************!*\
   !*** ./node_modules/lit-element/lit-element.js ***!
   \*************************************************/
-/*! exports provided: defaultConverter, notEqual, UpdatingElement, customElement, property, query, queryAll, eventOptions, html, svg, TemplateResult, SVGTemplateResult, supportsAdoptingStyleSheets, CSSResult, unsafeCSS, css, LitElement */
+/*! exports provided: html, svg, TemplateResult, SVGTemplateResult, LitElement, defaultConverter, notEqual, UpdatingElement, customElement, property, query, queryAll, eventOptions, supportsAdoptingStyleSheets, CSSResult, unsafeCSS, css */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1366,6 +1366,65 @@ const classMap = Object(_lit_html_js__WEBPACK_IMPORTED_MODULE_0__["directive"])(
     classMapCache.set(part, classInfo);
 });
 //# sourceMappingURL=class-map.js.map
+
+/***/ }),
+
+/***/ "./node_modules/lit-html/directives/unsafe-html.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/lit-html/directives/unsafe-html.js ***!
+  \*********************************************************/
+/*! exports provided: unsafeHTML */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unsafeHTML", function() { return unsafeHTML; });
+/* harmony import */ var _lib_parts_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib/parts.js */ "./node_modules/lit-html/lib/parts.js");
+/* harmony import */ var _lit_html_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../lit-html.js */ "./node_modules/lit-html/lit-html.js");
+/**
+ * @license
+ * Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+
+
+// For each part, remember the value that was last rendered to the part by the
+// unsafeHTML directive, and the DocumentFragment that was last set as a value.
+// The DocumentFragment is used as a unique key to check if the last value
+// rendered to the part was with unsafeHTML. If not, we'll always re-render the
+// value passed to unsafeHTML.
+const previousValues = new WeakMap();
+/**
+ * Renders the result as HTML, rather than text.
+ *
+ * Note, this is unsafe to use with any user-provided input that hasn't been
+ * sanitized or escaped, as it may lead to cross-site-scripting
+ * vulnerabilities.
+ */
+const unsafeHTML = Object(_lit_html_js__WEBPACK_IMPORTED_MODULE_1__["directive"])((value) => (part) => {
+    if (!(part instanceof _lit_html_js__WEBPACK_IMPORTED_MODULE_1__["NodePart"])) {
+        throw new Error('unsafeHTML can only be used in text bindings');
+    }
+    const previousValue = previousValues.get(part);
+    if (previousValue !== undefined && Object(_lib_parts_js__WEBPACK_IMPORTED_MODULE_0__["isPrimitive"])(value) &&
+        value === previousValue.value && part.value === previousValue.fragment) {
+        return;
+    }
+    const template = document.createElement('template');
+    template.innerHTML = value; // innerHTML casts to string internally
+    const fragment = document.importNode(template.content, true);
+    part.setValue(fragment);
+    previousValues.set(part, { value, fragment });
+});
+//# sourceMappingURL=unsafe-html.js.map
 
 /***/ }),
 
@@ -3288,6 +3347,81 @@ const svg = (strings, ...values) => new _lib_template_result_js__WEBPACK_IMPORTE
 
 /***/ }),
 
+/***/ "./src/Components/VisibilityTracker.ts":
+/*!*********************************************!*\
+  !*** ./src/Components/VisibilityTracker.ts ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var lit_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lit-element */ "./node_modules/lit-element/lit-element.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+let VisibilityTracker = class VisibilityTracker extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitElement"] {
+    constructor() {
+        super(...arguments);
+        this._visible = false;
+        this.observer = null;
+        this.target = null;
+        this.setupObserver = () => {
+            this.observer && this.observer.disconnect();
+            this.observer = new IntersectionObserver(([entry]) => {
+                this._visible = entry.isIntersecting;
+                this.dispatchEvent(new Event('intersectionchange'));
+            }, {
+                threshold: 1,
+                root: this.target
+            });
+            this.observer.observe(this);
+        };
+    }
+    get visible() {
+        return this._visible;
+    }
+    updated(changed) {
+        if (changed.has('target')) {
+            this.setupObserver();
+        }
+    }
+    connectedCallback() {
+        super.connectedCallback();
+        this.setupObserver();
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback();
+        this.observer && this.observer.disconnect();
+    }
+    render() {
+        return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `<slot></slot>`;
+    }
+};
+VisibilityTracker.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
+    :host {
+      display: block;
+    }
+  `;
+__decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: false }),
+    __metadata("design:type", Object)
+], VisibilityTracker.prototype, "target", void 0);
+VisibilityTracker = __decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["customElement"])('sunrise-visibility-tracker')
+], VisibilityTracker);
+/* harmony default export */ __webpack_exports__["default"] = (VisibilityTracker);
+
+
+/***/ }),
+
 /***/ "./src/Home/Events/Calendar.ts":
 /*!*************************************!*\
   !*** ./src/Home/Events/Calendar.ts ***!
@@ -3300,6 +3434,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lit_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lit-element */ "./node_modules/lit-element/lit-element.js");
 /* harmony import */ var lit_html_directives_class_map__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lit-html/directives/class-map */ "./node_modules/lit-html/directives/class-map.js");
 /* harmony import */ var _Temporal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Temporal */ "./src/Temporal/index.ts");
+/* harmony import */ var _TemporalUtils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TemporalUtils */ "./src/Home/Events/TemporalUtils.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3313,22 +3448,20 @@ var Calendar_1;
 
 
 
+
 class MonthRange {
     constructor(month) {
         this.month = month;
     }
     *[Symbol.iterator]() {
         const firstOfMonth = this.month.withDay(1);
-        const lastOfMonth = this.month.plus({ months: 1 }).withDay(1);
-        console.log('last of month', lastOfMonth.toString());
+        const lastOfMonth = this.month.plus({ months: 1 }).withDay(1).minus({ days: 1 });
         const startingSaturday = firstOfMonth.minus({ days: firstOfMonth.dayOfWeek });
-        console.log('starting sat', startingSaturday.toString());
         const endingSunday = lastOfMonth.plus({ days: 7 - lastOfMonth.dayOfWeek });
-        console.log('ending sun', endingSunday.toString());
         let current = startingSaturday;
         while (current.year !== endingSunday.year
-            && current.month !== endingSunday.month
-            && current.day !== endingSunday.day) {
+            || current.month !== endingSunday.month
+            || current.day !== endingSunday.day) {
             yield current;
             current = current.plus({ days: 1 });
         }
@@ -3338,7 +3471,7 @@ const thisMonth = () => {
     const now = new Date();
     return new _Temporal__WEBPACK_IMPORTED_MODULE_2__["CivilYearMonth"](now.getFullYear(), now.getMonth() + 1);
 };
-const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const formatMonthForSwitcher = (month) => {
     const date = new Date(month.year, month.month - 1);
     const formatter = new Intl.DateTimeFormat('en-iso', {
@@ -3373,6 +3506,7 @@ let Calendar = Calendar_1 = class Calendar extends lit_element__WEBPACK_IMPORTED
         return window.customElements.whenDefined('sunrise-events-calendar');
     }
     onDayClick(day) {
+        this.month = day.getCivilYearMonth();
         const label = day.toString();
         const element = this.renderRoot.querySelector(`[data-day="${label}"]`);
         if (!element)
@@ -3416,80 +3550,88 @@ let Calendar = Calendar_1 = class Calendar extends lit_element__WEBPACK_IMPORTED
         this.dispatchEvent(new CustomEvent('select'));
     }
     render() {
-        const eventDays = new Set(this.events.map(e => e.start.toString()));
-        /**
-         * @type Array<DayOfYear>
-         */
+        const eventDays = new Set(this.events.map(e => e.start.getCivilDate().toString()));
         const days = Array.from(new MonthRange(this.month));
-        console.log(days);
         return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
-      <div class="outer-card">
-        <div class="inner-card">
-          <div class="calendar">
-            <div class="calendar-switcher">
-              <button
-                class="calendar-switcher-button"
-                @click=${() => this.onPreviousMonthClick()}>
-                <span class="icon">chevron_left</span>
-              </button>
-              <div>${formatMonthForSwitcher(this.month)}</div>
-              <button
-                class="calendar-switcher-button"
-                @click=${() => this.onNextMonthClick()}>
-                <span class="icon">chevron_right</span>
-              </button>
-            </div>
-            <div class="calendar-grid">
-              ${weekdays.map(w => lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `<div class="calendar-grid-weekday">${w}</div>`)}
-              ${days.map(d => {
+      <div class="card">
+        <div class="calendar">
+          <div class="calendar-switcher">
+            <button
+              class="calendar-switcher-button"
+              @click=${() => this.onPreviousMonthClick()}>
+              <sunrise-events-icon
+                class="button-icon"
+                .icon=${'chevron_left'}>
+              </sunrise-events-icon>
+            </button>
+            <div>${formatMonthForSwitcher(this.month)}</div>
+            <button
+              class="calendar-switcher-button"
+              @click=${() => this.onNextMonthClick()}>
+              <sunrise-events-icon
+                class="button-icon"
+                .icon=${'chevron_right'}>
+              </sunrise-events-icon>
+            </button>
+          </div>
+          <div class="calendar-grid">
+            ${weekdays.map(w => lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `<div class="calendar-grid-weekday">${w}</div>`)}
+            ${days.map(d => {
             const hasEvent = eventDays.has(d.toString());
             const outOfMonth = !monthContains(this.month, d);
             if (hasEvent) {
                 return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
-                    <button
-                      class="calendar-grid-day has-event ${outOfMonth ? 'out-of-month' : ''}"
-                      @click=${() => this.onDayClick(d)}>
-                      <span class="calendar-grid-number has-event">${d.day}</span>
-                      <span class="calendar-grid-event-marker"></span>
-                    </button>
-                  `;
+                  <button
+                    class="calendar-grid-day has-event ${outOfMonth ? 'out-of-month' : ''}"
+                    @click=${() => this.onDayClick(d)}>
+                    <span class="calendar-grid-number has-event">${d.day}</span>
+                    <span class="calendar-grid-event-marker"></span>
+                  </button>
+                `;
             }
             return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
-                  <div class="calendar-grid-day ${outOfMonth ? 'out-of-month' : ''}">
-                    <span class="calendar-grid-number">${d.day}</span>
+                <div class="calendar-grid-day ${outOfMonth ? 'out-of-month' : ''}">
+                  <span class="calendar-grid-number">${d.day}</span>
+                </div>
+              `;
+        })}
+          </div>
+        </div>
+        ${this.events.length ?
+            lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
+            <div class="events" data-events-scroll>
+              ${this.eventsByDay(this.events).map((events) => {
+                return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
+                  <div class="events-day-group" data-day="${events[0].start.getCivilDate().toString()}">
+                    <div class="events-day-heading">${formatDateForHeader(events[0].start.getCivilDate())}</div>
+                    <div class="events-inner-list">
+                      ${events.map(e => {
+                    return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
+                          <div
+                            class=${Object(lit_html_directives_class_map__WEBPACK_IMPORTED_MODULE_1__["classMap"])({ 'events-event': true, selected: this.selected === e })}
+                            @click=${() => this.onEventClick(e)}>
+                            <time
+                              datetime=${e.start.getCivilDate().toString()}
+                              class="events-event-title">
+                              ${e.title}
+                            </time>
+                            <time
+                              datetime=${e.start.getCivilTime().toString()}
+                              class="events-event-time">
+                              ${_TemporalUtils__WEBPACK_IMPORTED_MODULE_3__["fullTimeString"](e.start)}
+                            </time>
+                            <div class="events-event-place">${e.place}</div>
+                            <div class="events-event-address">${e.address}</div>
+                          </div>
+                        `;
+                })}
+                    </div>
                   </div>
                 `;
-        })}
-            </div>
-          </div>
-          ${this.events.length ?
-            lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
-              <div class="events" data-events-scroll>
-                ${this.eventsByDay(this.events).map((events) => {
-                return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
-                    <div class="events-day-group" data-day="${events[0].start.getCivilDate().toString()}">
-                      <div class="events-day-heading">${formatDateForHeader(events[0].start.getCivilDate())}</div>
-                      <div class="events-inner-list">
-                        ${events.map(e => {
-                    return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
-                            <div
-                              class=${Object(lit_html_directives_class_map__WEBPACK_IMPORTED_MODULE_1__["classMap"])({ 'events-event': true, selected: this.selected === e })}
-                              @click=${() => this.onEventClick(e)}>
-                              <div class="events-event-title">${e.title}</div>
-                              <div class="events-event-time"></div>
-                              <div class="events-event-place">${e.place}</div>
-                              <div class="events-event-address">${e.address}</div>
-                            </div>
-                          `;
-                })}
-                      </div>
-                    </div>
-                  `;
             })}
-              </div>
-            ` :
+            </div>
+          ` :
             lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] ``}
-        </div>
       </div>
     `;
     }
@@ -3499,25 +3641,25 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       display: block;
       min-height: 0;
       position: relative;
+      height: 100%;
+      width: 100%;
     }
     * {
       box-shadow: border-box;
     }
-    .outer-card {
-      border-radius: var(--shape-border-radius);
-      position: relative;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .inner-card {
+    .card {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0px, auto);
       grid-auto-flow: row;
+      border-radius: var(--shape-border-radius);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.12);
+      min-height: 0;
       height: 100%;
+      width: 100%;
     }
 
     .calendar {
@@ -3530,7 +3672,6 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       grid-template-columns: auto 1fr auto;
       grid-auto-flow: column;
       place-items: center;
-      padding: 8px;
     }
 
     .calendar-switcher-button {
@@ -3538,49 +3679,39 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       border: 0;
       outline: 0;
       padding: 4px;
-      color: var(--color-willow);
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 48px;
+      height: 48px;
       cursor: pointer;
       font-size: 32px;
+      border-radius: 50%;
     }
-      .calendar-switcher-button::before {
-        position: absolute;
-        content: '';
-        background-color: var(--color-willow);
-        opacity: 0;
-        border-radius: 50%;
-        left: 0; right: 0; top: 0; bottom: 0;
-        pointer-events: none;
+      .calendar-switcher-button:hover {
+        background-color: rgba(0,0,0,0.04);
       }
-      .calendar-switcher-button:hover::before {
-        opacity: 0.04;
-      }
-      .calendar-switcher-button:active::before {
-        opacity: 0.08;
+      .calendar-switcher-button:active {
+        background-color: rgba(0,0,0,0.12);
       }
 
     .calendar-grid {
       display: grid;
-      grid-template-columns: repeat(7, auto);
+      grid-template-columns: repeat(7, 36px);
+      grid-template-rows: repeat(auto-fill, 36px);
       grid-auto-flow: dense;
       place-items: center;
-      padding: 8px;
+      grid-column-gap: 4px;
+      grid-row-gap: 4px;
+      place-content: center;
     }
 
-    .calendar-grid-weekday {
-      padding: 8px 0;
-    }
-
-    .calendar-grid-day {
+    .calendar-grid-weekday, .calendar-grid-day {
       line-height: 1;
-      font-size: 20px;
-      width: 48px;
-      height: 48px;
+      font-size: 16px;
+      width: 36px;
+      height: 36px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -3599,9 +3730,12 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
         cursor: pointer;
       }
       .calendar-grid-day.has-event:hover {
-        opacity: 1;
-        background-color: var(--state-overlay-color-hover);
+        background-color: rgba(0,0,0,0.04);
       }
+    
+    .calendar-grid-weekday {
+      color: rgba(0,0,0,0.6);
+    }
 
     .calendar-grid-number {
       margin-bottom: 10px;
@@ -3616,7 +3750,7 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       height: 6px;
       display: block;
       border-radius: 50%;
-      background-color: var(--color-yellow);
+      background-color: rgba(0,0,0,0.87);
     }
 
     .icon {
@@ -3642,7 +3776,6 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       border-bottom-right-radius: var(--shape-border-radius);
       min-height: 0;
       position: relative;
-      padding-bottom: 24px;
     }
 
     .events-day-group {
@@ -3652,49 +3785,70 @@ Calendar.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       position: -webkit-sticky;
       position: sticky;
       top: 0;
-      background-color: var(--color-charcoal);
       padding: 16px;
-      text-transform: uppercase;
-      font-weight: 900;
-    }
-      .events-day-heading::before {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        content: '';
-        background-color: var(--elevation-overlay-color-01dp);
-      }
-    .events-inner-list {
-      padding: 0 16px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.1px;
+      background-color: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
     }
     .events-event {
       padding: 16px;
-      box-shadow: var(--elevation-box-shadow-01dp);
-      border-radius: var(--shape-border-radius);
-      background-color: var(--elevation-overlay-color-02dp);
-      margin-bottom: 16px;
       cursor: pointer;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-column-gap: 8px;
+      grid-template-rows: auto auto auto;
     }
-      .events-event:last-child {
-        margin-bottom: 0;
-      }
       .events-event.selected {
-        background-color: var(--state-overlay-color-selected);
-        border: 2px solid var(--state-border-color-selected);
-        padding: 14px;
+        background-color: rgba(0,0,0,0.12);
       }
     .events-event-title {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.15px;
+      grid-row: 1;
+      grid-column: 1;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .events-event-time {
-      margin-bottom: 8px;
+      grid-row: 1;
+      grid-column: 2;
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      color: rgba(0,0,0,0.6);
+      align-self: center;
     }
     .events-event-place {
-      padding-left: 4px;
-      font-size: 18px;
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      letter-spacing: 0.25px;
+      grid-column: 1 / 2;
+      grid-row: 2;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .events-event-address {
-      padding-left: 4px;
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      letter-spacing: 0.25px;
+      grid-column: 1 / 2;
+      grid-row: 3;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .button-icon {
+      width: 24px;
+      height: 24px;
+      color: rgba(0,0,0,0.6);
     }
   `;
 __decorate([
@@ -3727,8 +3881,12 @@ Calendar = Calendar_1 = __decorate([
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lit_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lit-element */ "./node_modules/lit-element/lit-element.js");
-/* harmony import */ var _Map__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Map */ "./src/Home/Events/Map.ts");
-/* harmony import */ var _Icon__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Icon */ "./src/Home/Events/Icon.ts");
+/* harmony import */ var lit_html_directives_unsafe_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lit-html/directives/unsafe-html */ "./node_modules/lit-html/directives/unsafe-html.js");
+/* harmony import */ var lit_html_directives_class_map__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lit-html/directives/class-map */ "./node_modules/lit-html/directives/class-map.js");
+/* harmony import */ var _Map__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Map */ "./src/Home/Events/Map.ts");
+/* harmony import */ var _Icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Icon */ "./src/Home/Events/Icon.ts");
+/* harmony import */ var _TemporalUtils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./TemporalUtils */ "./src/Home/Events/TemporalUtils.ts");
+/* harmony import */ var _Components_VisibilityTracker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Components/VisibilityTracker */ "./src/Components/VisibilityTracker.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3741,11 +3899,25 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
+
+
 let Details = class Details extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitElement"] {
     constructor() {
         super(...arguments);
         this.selected = null;
         this.hubName = '';
+        this.topHidden = false;
+        this.bottomHidden = false;
+        this.onTopIntersectionChange = (e) => {
+            const target = e.target;
+            this.topHidden = !target.visible;
+        };
+        this.onBottomIntersectionChange = (e) => {
+            const target = e.target;
+            this.bottomHidden = !target.visible;
+        };
     }
     render() {
         return this.selected !== null ?
@@ -3760,7 +3932,50 @@ let Details = class Details extends lit_element__WEBPACK_IMPORTED_MODULE_0__["Li
               .longitude=${this.selected.coordinate.longitude}>
             </sunrise-events-map> -->
           </a>
-          <h3 class="title">${this.selected.title}</h3>
+          <div class="content">
+            <h3 class="title">${this.selected.title}</h3>
+            <time class="time">
+              ${_TemporalUtils__WEBPACK_IMPORTED_MODULE_5__["fullDateString"](this.selected.start)} • ${_TemporalUtils__WEBPACK_IMPORTED_MODULE_5__["fullTimeString"](this.selected.start)}
+            </time>
+            <div class="location">
+              <sunrise-events-icon
+                class="location-icon"
+                .icon=${'place'}>
+              </sunrise-events-icon>
+              <p class="location-name">${this.selected.place}</p>
+              <p class="location-address">${this.selected.address}</p>
+            </div>
+            <div class="description-outer">
+              <div
+                class=${Object(lit_html_directives_class_map__WEBPACK_IMPORTED_MODULE_2__["classMap"])({
+                'description': true,
+                'description-top-shadow': this.topHidden,
+                'description-bottom-shadow': this.bottomHidden,
+            })}>
+                <sunrise-visibility-tracker
+                  .target=${this.description}
+                  class="description-top"
+                  @intersectionchange=${this.onTopIntersectionChange}>
+                </sunrise-visibility-tracker>
+                <div class="description-content">
+                  ${Object(lit_html_directives_unsafe_html__WEBPACK_IMPORTED_MODULE_1__["unsafeHTML"])(this.selected.description)}
+                </div>
+                <sunrise-visibility-tracker
+                  .target=${this.description}
+                  class="description-bottom"
+                  @intersectionchange=${this.onBottomIntersectionChange}>
+                </sunrise-visibility-tracker>
+              </div>
+            </div>
+            <div>
+              <a
+                target="_blank"
+                class="rsvp"
+                href=${this.selected.url}>
+                RSVP
+              </a>
+            </div>
+          </div>  
         </div>
       ` :
             lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
@@ -3770,23 +3985,55 @@ let Details = class Details extends lit_element__WEBPACK_IMPORTED_MODULE_0__["Li
       `;
     }
 };
-Details.dependencies = [_Map__WEBPACK_IMPORTED_MODULE_1__["default"], _Icon__WEBPACK_IMPORTED_MODULE_2__["default"]];
+Details.dependencies = [_Map__WEBPACK_IMPORTED_MODULE_3__["default"], _Icon__WEBPACK_IMPORTED_MODULE_4__["default"], _Components_VisibilityTracker__WEBPACK_IMPORTED_MODULE_6__["default"]];
 Details.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
     :host {
-      box-shadow: var(--elevation-box-shadow-01dp);
-      background-color: var(--elevation-overlay-color-01dp);
       border-radius: var(--shape-border-radius);
       overflow: hidden;
       position: relative;
       width: 100%;
       height: 100%;
+      max-height: 90vh;
+      min-height: 0;
+      border: 1px solid rgba(0,0,0,0.12);
     }
     * {
       box-sizing: border-box;
     }
+    .location {
+      display: grid;
+      grid-template-rows: auto auto;
+      grid-template-columns: 24px auto;
+      grid-column-gap: 16px;
+      grid-row-gap: 4px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+      margin-bottom: 16px;
+    }
+    .location-icon {
+      grid-row: 1 / span 2;
+      grid-column: 1;
+      place-self: center;
+    }
+    .location-name {
+      font-size: 14px;
+      letter-spacing: 0.1px;
+      font-weight: 600;
+      grid-row: 1;
+      grid-column: 2;
+      margin: 0;
+    }
+    .location-address {
+      font-size: 14px;
+      letter-spacing: 0.25px;
+      color: rgba(0,0,0,0.6);
+      grid-row: 2;
+      grid-column: 2;
+      margin: 0;
+    }
     .selected-container {
       display: grid;
-      grid-template-rows: 280px auto;
+      grid-template-rows: 280px minmax(0, auto);
       min-height: 0;
       height: 100%;
     }
@@ -3801,6 +4048,106 @@ Details.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       padding: 64px;
       text-align: center;
     }
+    .content {
+      padding: 16px;
+      padding-bottom: 8px;
+      display: grid;
+      grid-auto-flow: row;
+      grid-template-rows: auto auto auto 1fr auto;
+    }
+    .title {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .time {
+      font-size: 14px;
+      letter-spacing: 0.25px;
+      color: rgba(0,0,0,0.6);
+      margin-bottom: 16px;
+      display: block;
+    }
+    .divider {
+      height: 1px;
+      background-color: rgba(0,0,0,0.12);
+      margin-top: 24px;
+      margin-bottom: 16px;
+      border: 0;
+    }
+    .description-outer {
+      min-height: 0;
+      position: relative;
+    }
+    .description {
+      overflow-y: auto;
+      position: absolute;
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      letter-spacing: 0.25px;
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+    .description-bottom-shadow {
+      box-shadow: inset 0px -8px 9px -8px rgba(0,0,0,0.2);
+    }
+    .description-top-shadow {
+      box-shadow: inset 0px 8px 9px -8px rgba(0,0,0,0.2);
+    }
+    .description-bottom-shadow.description-top-shadow {
+      box-shadow: inset 0px -8px 9px -8px rgba(0,0,0,0.2), inset 0px 8px 9px -8px rgba(0,0,0,0.2);
+    }
+    .description-content > p:first-child {
+      margin-top: 0;
+    }
+    .description-content > p:last-child {
+      margin-bottom: 0;
+    }
+    .description-content > div:last-child p {
+      margin-bottom: 0;
+    }
+    .description-content strong {
+      font-weight: 600;
+    }
+    .rsvp {
+      outline: 0;
+      background: none;
+      border: none;
+      padding: 0 8px;
+      height: 36px;
+      line-height: 36px;
+      border-radius: 4px;
+      overflow: hidden;
+      display: inline-block;
+      font-size: 14px;
+      color: rgba(0,0,0,0.6);
+      letter-spacing: 1.25px;
+      text-align: center;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: 24px;
+    }
+    .rsvp:hover {
+      background-color: rgba(0,0,0,0.04);
+      color: rgba(0,0,0,0.87);
+    }
+    .rsvp:active {
+      background-color: rgba(0,0,0,0.12);
+    }
+    .description-top {
+      height: 1px;
+      margin-bottom: -1px;
+      position: relative;
+    }
+    .description-bottom {
+      height: 1px;
+      margin-top: -1px;
+      position: relative;
+    }
   `;
 __decorate([
     Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: false }),
@@ -3810,6 +4157,18 @@ __decorate([
     Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: false }),
     __metadata("design:type", Object)
 ], Details.prototype, "hubName", void 0);
+__decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: false }),
+    __metadata("design:type", Boolean)
+], Details.prototype, "topHidden", void 0);
+__decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: false }),
+    __metadata("design:type", Boolean)
+], Details.prototype, "bottomHidden", void 0);
+__decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["query"])('.description'),
+    __metadata("design:type", HTMLDivElement)
+], Details.prototype, "description", void 0);
 Details = __decorate([
     Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["customElement"])('sunrise-events-details')
 ], Details);
@@ -3883,6 +4242,8 @@ Icon.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
     :host {
       display: inline-block;
       font-family: Material Icons;
+      font-size: 24px;
+      line-height: 24px;
     }
   `;
 __decorate([
@@ -4154,6 +4515,8 @@ let Events = class Events extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitE
         this.events = [];
         this.selected = null;
         this.hubName = '';
+        this.timezone = 'UTC';
+        this.firstSelected = false;
         this.onSelect = (event) => {
             this.selected = event.target.selected;
         };
@@ -4162,6 +4525,7 @@ let Events = class Events extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitE
         super.update(props);
         if (props.has('events')) {
             if (this.events.length && this.selected === null) {
+                this.firstSelected = true;
                 await this.updateComplete;
                 this.selected = this.sortedEvents()[0];
             }
@@ -4172,11 +4536,13 @@ let Events = class Events extends lit_element__WEBPACK_IMPORTED_MODULE_0__["LitE
     }
     render() {
         return lit_element__WEBPACK_IMPORTED_MODULE_0__["html"] `
-      <sunrise-events-calendar
-        .events=${this.events}
-        .selected=${this.selected}
-        @select=${this.onSelect}>
-      </sunrise-events-calendar>
+      <div class="calendar-container">
+        <sunrise-events-calendar
+          .events=${this.events}
+          .selected=${this.selected}
+          @select=${this.onSelect}>
+        </sunrise-events-calendar>
+      </div>
       <sunrise-events-details
         .selected=${this.selected}
         .hubName=${this.hubName}>
@@ -4190,9 +4556,18 @@ Events.styles = lit_element__WEBPACK_IMPORTED_MODULE_0__["css"] `
       display: grid;
       position: relative;
       grid-template-columns: 4.5fr 5.5fr;
+      grid-template-rows: 1fr;
       grid-column-gap: 16px;
       grid-auto-flow: column;
       min-height: 0;
+    }
+    .calendar-container {
+      position: relative;
+      min-height: 0;
+    }
+    sunrise-events-calendar {
+      position: absolute;
+      height: 100%;
     }
   `;
 __decorate([
@@ -4207,6 +4582,14 @@ __decorate([
     Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: false }),
     __metadata("design:type", String)
 ], Events.prototype, "hubName", void 0);
+__decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["property"])({ attribute: false }),
+    __metadata("design:type", String)
+], Events.prototype, "timezone", void 0);
+__decorate([
+    Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["query"])('sunrise-events-details'),
+    __metadata("design:type", _Details__WEBPACK_IMPORTED_MODULE_2__["default"])
+], Events.prototype, "details", void 0);
 Events = __decorate([
     Object(lit_element__WEBPACK_IMPORTED_MODULE_0__["customElement"])('sunrise-events')
 ], Events);
@@ -4854,12 +5237,12 @@ class CivilYearMonth {
     }
     plus(durationLike = {}) {
         const duration = Object(_Duration__WEBPACK_IMPORTED_MODULE_1__["castDuration"])(durationLike, this);
-        const { year, month } = Object(_Shared__WEBPACK_IMPORTED_MODULE_0__["calculate"])(this, duration, false);
+        const { year, month } = Object(_Shared__WEBPACK_IMPORTED_MODULE_0__["calculate"])(this.withDay(1), duration, false);
         return new CivilYearMonth(year, month);
     }
     minus(durationLike = {}) {
         const duration = Object(_Duration__WEBPACK_IMPORTED_MODULE_1__["castDuration"])(durationLike, this);
-        const { year, month } = Object(_Shared__WEBPACK_IMPORTED_MODULE_0__["calculate"])(this, duration, true);
+        const { year, month } = Object(_Shared__WEBPACK_IMPORTED_MODULE_0__["calculate"])(this.withDay(1), duration, true);
         return new CivilYearMonth(year, month);
     }
     difference(other) {
@@ -5334,9 +5717,269 @@ function getOffsetInfo(ms, ns, offset) {
   !*** ./src/Temporal/Shared.ts ***!
   \********************************/
 /*! exports provided: DATA, isLeapYear, daysInMonth, pad, signedpad, calculate, toDayOfYear, toDayOfWeek, toWeekOfYear, epochMSNS, parseOffsetString, makeOffsetString, possibleTimestamps */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-throw new Error("Module parse failed: Unexpected token (27:5)\nFile was processed with these loaders:\n * ./node_modules/ts-loader/index.js\nYou may need an additional loader to handle the result of these loaders.\n| export function calculate({ year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0, millisecond = 0, microsecond = 0, nanosecond = 0 }, { years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0, milliseconds = 0, microseconds = 0, nanoseconds = 0 }, negate) {\n|     year += negate ? -1 : 1;\n>      * years;\n|     month += negate ? -1 : 1;\n|      * months;");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DATA", function() { return DATA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLeapYear", function() { return isLeapYear; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "daysInMonth", function() { return daysInMonth; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "pad", function() { return pad; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "signedpad", function() { return signedpad; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "calculate", function() { return calculate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toDayOfYear", function() { return toDayOfYear; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toDayOfWeek", function() { return toDayOfWeek; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toWeekOfYear", function() { return toWeekOfYear; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "epochMSNS", function() { return epochMSNS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseOffsetString", function() { return parseOffsetString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeOffsetString", function() { return makeOffsetString; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "possibleTimestamps", function() { return possibleTimestamps; });
+const DATA = Symbol();
+const DoM = {
+    standard: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+    leapyear: [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+};
+function isLeapYear(year) {
+    if (undefined === year)
+        return false;
+    const isDiv4 = (year % 4) === 0;
+    const isDiv100 = (year % 100) === 0;
+    const isDiv400 = (year % 400) === 0;
+    return isDiv4 && (!isDiv100 || isDiv400);
+}
+function daysInMonth(year, month) {
+    return DoM[isLeapYear(year) ? 'leapyear' : 'standard'][month - 1];
+}
+function pad(num, cnt) {
+    const str = `${Math.abs(+num)}`;
+    const prefix = (new Array(cnt)).fill('0').join('');
+    return `${prefix}${`${str}`.trim()}`.slice(-1 * Math.max(cnt, str.length));
+}
+function signedpad(num, cnt) {
+    return `${+num < 0 ? '-' : ''}${pad(num, cnt)}`;
+}
+function calculate({ year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0, millisecond = 0, microsecond = 0, nanosecond = 0 }, { years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0, milliseconds = 0, microseconds = 0, nanoseconds = 0 }, negate) {
+    year += (negate ? -1 : 1) * years;
+    month += (negate ? -1 : 1) * months;
+    day += (negate ? -1 : 1) * days;
+    hour += (negate ? -1 : 1) * hours;
+    minute += (negate ? -1 : 1) * minutes;
+    second += (negate ? -1 : 1) * seconds;
+    millisecond += (negate ? -1 : 1) * milliseconds;
+    microsecond += (negate ? -1 : 1) * microseconds;
+    nanosecond += (negate ? -1 : 1) * nanoseconds;
+    while (nanosecond < 0) {
+        nanosecond += 1E3;
+        microsecond -= 1;
+    }
+    while (nanosecond >= 1E3) {
+        nanosecond -= 1E3;
+        microsecond += 1;
+    }
+    while (microsecond < 0) {
+        microsecond += 1E3;
+        millisecond -= 1;
+    }
+    while (microsecond >= 1E3) {
+        microsecond -= 1E3;
+        millisecond += 1;
+    }
+    while (millisecond < 0) {
+        millisecond += 1E3;
+        second -= 1;
+    }
+    while (millisecond >= 1E3) {
+        millisecond -= 1E3;
+        second += 1;
+    }
+    while (second < 0) {
+        second += 60;
+        minute -= 1;
+    }
+    while (second >= 60) {
+        second -= 60;
+        minute += 1;
+    }
+    while (minute < 0) {
+        minute += 60;
+        hour -= 1;
+    }
+    while (minute >= 60) {
+        minute -= 60;
+        hour += 1;
+    }
+    while (hour < 0) {
+        hour += 24;
+        day -= 1;
+    }
+    while (hour >= 24) {
+        hour -= 24;
+        day += 1;
+    }
+    while (month < 1) {
+        month += 12;
+        year -= 1;
+    }
+    while (month > 12) {
+        month -= 12;
+        year += 1;
+    }
+    while (day < 1) {
+        month -= 1;
+        day = daysInMonth(year, month) + day;
+        if (month < 1) {
+            month = 12;
+            year -= 1;
+        }
+    }
+    while (day > daysInMonth(year, month)) {
+        day -= daysInMonth(year, month);
+        month += 1;
+        if (month > 12) {
+            month = 1;
+            year += 1;
+        }
+    }
+    while (month < 1) {
+        month += 12;
+        year -= 1;
+    }
+    while (month > 12) {
+        month -= 12;
+        year += 1;
+    }
+    return {
+        year, month, day,
+        hour, minute, second,
+        millisecond, microsecond, nanosecond
+    };
+}
+function toDayOfYear(year, month, day) {
+    let days = day;
+    for (let m = month - 1; m > 0; m--) {
+        days += daysInMonth(year, m);
+    }
+    return days;
+}
+function toDayOfWeek(year, month, day) {
+    const m = month + ((month < 3) ? 10 : -2);
+    const Y = year - ((month < 3) ? 1 : 0);
+    const c = Math.floor(Y / 100);
+    const y = Y - (c * 100);
+    const d = day;
+    const pD = d;
+    const pM = Math.floor((2.6 * m) - 0.2);
+    const pY = y + Math.floor(y / 4);
+    const pC = Math.floor(c / 4) - (2 * c);
+    const dow = (pD + pM + pY + pC) % 7;
+    return dow + ((dow < 0) ? 7 : 0);
+}
+function toWeekOfYear(year, month, day) {
+    let doy = toDayOfYear(year, month, day);
+    let dow = toDayOfWeek(year, month, day) || 7;
+    let doj = toDayOfWeek(year, 1, 1);
+    const week = Math.floor((doy - dow + 10) / 7);
+    if (week < 1) {
+        if (doj === (isLeapYear(year) ? 5 : 6)) {
+            return 53;
+        }
+        else {
+            return 52;
+        }
+    }
+    if (week === 53) {
+        if (((isLeapYear(year) ? 366 : 365) - doy) < (4 - dow)) {
+            return 1;
+        }
+    }
+    return week;
+}
+function epochMSNS({ year = 0, month = 0, day = 0, hour = 0, minute = 0, second = 0, millisecond = 0, microsecond = 0, nanosecond = 0 } = {}) {
+    const ms = Date.UTC(year, month - 1, day, hour, minute, second, millisecond);
+    const ns = (microsecond * 1e3) + nanosecond;
+    return { ms, ns };
+}
+const OFFSETRE = /^([+-]?)(\d{2})\:?(\d{2})$/;
+function parseOffsetString(offsetString) {
+    const match = OFFSETRE.exec(offsetString);
+    if (!match)
+        throw new Error('invalid offset string');
+    const hours = +match[2];
+    const minutes = +match[3];
+    const direction = match[1] === '-' ? -1 : +1;
+    return (hours * 60 + minutes) * 60 * 1e3 * direction;
+}
+function makeOffsetString(offsetMilliseconds) {
+    const direction = (offsetMilliseconds < 0) ? '-' : '+';
+    const offsetMinutes = Math.floor(Math.abs(offsetMilliseconds) / 6e4);
+    const hours = Math.floor(offsetMinutes / 60);
+    const minutes = Math.floor(offsetMinutes % 60);
+    return `${direction}${('00' + hours).slice(-2)}:${('00' + minutes).slice(-2)}`;
+}
+function possibleTimestamps({ year, month, day, hour = 0, minute = 0, second = 0, millisecond = 0, microsecond, nanosecond = 0 }, zone) {
+    const base = Date.UTC(year, month - 1, day, hour, minute, second, millisecond);
+    const formatter = new Intl.DateTimeFormat('en-iso', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
+        timeZone: zone
+    });
+    const possible = possibleOffsets(year, formatter).sort().map((offset) => {
+        const ms = base - offset;
+        const ns = microsecond * 1e3 + nanosecond;
+        const info = getTimestampInfo(ms, ns, formatter);
+        if (info.hour !== hour)
+            return undefined;
+        if (info.year !== year)
+            return undefined;
+        if (info.month !== month)
+            return undefined;
+        if (info.day !== day)
+            return undefined;
+        if (info.minute !== minute)
+            return undefined;
+        if (info.second !== second)
+            return undefined;
+        return { ms, ns };
+    }).filter(x => !!x).sort((a, b) => {
+        if (a.ms !== b.ms)
+            a.ms - b.ms;
+        return a.ns - b.ns;
+    });
+    return possible;
+}
+function possibleOffsets(year, formatter) {
+    const base = new Date(year, 0, 2, 9);
+    const res = new Set();
+    (new Array(12).fill(0)).forEach((_, month) => {
+        base.setMonth(month);
+        const { offsetMilliseconds } = getTimestampInfo(base.getTime(), 123, formatter);
+        res.add(offsetMilliseconds);
+    });
+    return Array.from(res);
+}
+function getTimestampInfo(ms, ns = 0, formatter) {
+    const { year, month, day, hour, minute, second } = formatter.formatToParts(ms).reduce((res, item) => {
+        if (item.type !== 'literal')
+            res[item.type] = parseInt(item.value, 10);
+        return res;
+    }, {});
+    const millisecond = (ms % 1000);
+    const microsecond = Math.floor(ns / 1e3) % 1e3;
+    const nanosecond = Math.floor(ns / 1e0) % 1e3;
+    const offsetMilliseconds = Date.UTC(year, month - 1, day, hour, minute, second, millisecond) - ms;
+    return {
+        year, month, day,
+        hour, minute, second,
+        millisecond, microsecond, nanosecond,
+        offsetMilliseconds
+    };
+}
+
 
 /***/ }),
 
@@ -5588,4 +6231,4 @@ __webpack_require__.r(__webpack_exports__);
 /***/ })
 
 /******/ });
-//# sourceMappingURL=home.f5c15759b34f05035af4.js.map
+//# sourceMappingURL=home.b812c6e30980e082b607.js.map

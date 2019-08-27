@@ -1,0 +1,15 @@
+.Components-Footer {
+  background-color: #121212;
+  color: rgba(255,255,255,0.87);
+  padding: 24px;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-rows: repeat(3, auto);
+  grid-row-gap: 24px;
+  justify-content: center;
+  justify-items: center;
+}
+
+.Components-Footer-Copyright {
+  text-align: center;
+}

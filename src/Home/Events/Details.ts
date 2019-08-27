@@ -42,10 +42,10 @@ export default class Details extends LitElement {
             class="map-link"
             target="_blank"
             href="https://www.google.com/maps/place/${encodeURIComponent(this.selected.address)}">
-            <!-- <sunrise-events-map
+            <sunrise-events-map
               .latitude=${this.selected.coordinate.latitude}
               .longitude=${this.selected.coordinate.longitude}>
-            </sunrise-events-map> -->
+            </sunrise-events-map>
           </a>
           <div class="content">
             <h3 class="title">${this.selected.title}</h3>

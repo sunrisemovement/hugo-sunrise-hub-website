@@ -1047,7 +1047,7 @@ UpdatingElement.finalized = true;
 /*!*************************************************!*\
   !*** ./node_modules/lit-element/lit-element.js ***!
   \*************************************************/
-/*! exports provided: html, svg, TemplateResult, SVGTemplateResult, LitElement, defaultConverter, notEqual, UpdatingElement, customElement, property, query, queryAll, eventOptions, supportsAdoptingStyleSheets, CSSResult, unsafeCSS, css */
+/*! exports provided: defaultConverter, notEqual, UpdatingElement, customElement, property, query, queryAll, eventOptions, html, svg, TemplateResult, SVGTemplateResult, supportsAdoptingStyleSheets, CSSResult, unsafeCSS, css, LitElement */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3927,10 +3927,10 @@ let Details = class Details extends lit_element__WEBPACK_IMPORTED_MODULE_0__["Li
             class="map-link"
             target="_blank"
             href="https://www.google.com/maps/place/${encodeURIComponent(this.selected.address)}">
-            <!-- <sunrise-events-map
+            <sunrise-events-map
               .latitude=${this.selected.coordinate.latitude}
               .longitude=${this.selected.coordinate.longitude}>
-            </sunrise-events-map> -->
+            </sunrise-events-map>
           </a>
           <div class="content">
             <h3 class="title">${this.selected.title}</h3>
@@ -6231,4 +6231,4 @@ __webpack_require__.r(__webpack_exports__);
 /***/ })
 
 /******/ });
-//# sourceMappingURL=home.b812c6e30980e082b607.js.map
+//# sourceMappingURL=home.fa3242d8c4d0c6d4cc91.js.map

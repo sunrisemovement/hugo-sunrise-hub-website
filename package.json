@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/domready": "1.0.0",
-    "acorn": "6.1.1",
+    "acorn": "6.4.1",
     "clean-webpack-plugin": "3.0.0",
     "cors": "2.8.5",
     "domready": "1.0.8",
